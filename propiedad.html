@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Propiedad | Bienestar Soluciones Inmobiliarias</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+:root{--primary:#021b3a;--secondary:#0b4ea2;--accent:#3d8cff;--bg:#f5f7fb;--text:#374151;--muted:#64748b;--shadow:0 18px 50px rgba(2,27,58,.12)}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{font-family:Poppins,sans-serif;background:var(--bg);color:var(--text)}img{display:block;max-width:100%}a{text-decoration:none}
+header{position:sticky;top:0;z-index:100;background:rgba(2,14,32,.97);backdrop-filter:blur(12px);padding:14px 6%;box-shadow:0 12px 30px rgba(0,0,0,.15)}
+.nav{max-width:1250px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:15px}.brand{display:flex;align-items:center;gap:12px;color:#fff}.brand img{width:62px;background:#fff;padding:5px;border-radius:11px}.brand span{display:block;color:#c9d8e9;font-size:.78rem}
+.back{display:flex;align-items:center;gap:8px;color:#fff;background:linear-gradient(135deg,#0b4ea2,#246fd1);padding:11px 16px;border-radius:12px}
+.container{max-width:1250px;margin:auto;padding:38px 20px 70px}.loading{min-height:55vh;display:grid;place-items:center;text-align:center;color:var(--muted)}
+.layout{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(320px,.75fr);gap:28px;align-items:start}.card{background:#fff;border-radius:24px;box-shadow:var(--shadow)}
+.gallery-card{padding:14px}.main-wrap{position:relative;overflow:hidden;border-radius:19px}.main-img{width:100%;height:520px;object-fit:cover;cursor:zoom-in}.count{position:absolute;right:14px;bottom:14px;background:rgba(2,14,32,.82);color:#fff;padding:7px 12px;border-radius:999px;font-size:.8rem}
+.thumbs{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin-top:10px}.thumbs img{width:100%;height:86px;object-fit:cover;border-radius:11px;border:2px solid transparent;cursor:pointer}.thumbs img.active{border-color:var(--accent)}
+.info{padding:27px;position:sticky;top:105px}.badge{display:inline-block;background:#eaf2ff;color:var(--secondary);padding:6px 11px;border-radius:999px;font-size:.78rem;font-weight:600}.price{font-size:1.9rem;color:var(--secondary);font-weight:700;margin:13px 0 5px}.info h1{color:var(--primary);font-size:1.75rem;line-height:1.25}.location{color:var(--muted);margin:9px 0 22px}.features{display:grid;grid-template-columns:1fr 1fr;gap:9px}.feature{background:#f2f6fc;border-radius:12px;padding:11px;font-size:.86rem}.cta{display:grid;gap:9px;margin-top:20px}.cta a,.cta button{border:0;padding:13px 15px;border-radius:12px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer}.wa{background:#25D366;color:#fff}.call{background:#eef4ff;color:var(--secondary)}.share{background:#f2f4f7;color:#344054}
+.description,.advisor,.appointment{padding:28px;margin-top:24px}.description h2,.advisor h2,.appointment h2{color:var(--primary);margin-bottom:12px}.description p{line-height:1.9}.advisor-wrap{display:flex;align-items:center;gap:16px}.advisor-photo{width:86px;height:86px;border-radius:20px;object-fit:cover;background:#eef4ff}.advisor small{color:var(--muted)}
+.appt-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field label{display:block;font-weight:600;font-size:.88rem;margin-bottom:5px}.field input,.field textarea{width:100%;padding:12px;border:1px solid #dbe4ef;border-radius:11px;font:inherit}.field textarea{min-height:95px;resize:vertical}.full{grid-column:1/-1}.submit{margin-top:13px;border:0;border-radius:12px;background:linear-gradient(135deg,#0b4ea2,#246fd1);color:#fff;padding:13px 20px;font-weight:600;cursor:pointer}
+.social{padding:75px 6%;background:linear-gradient(145deg,#031225,#071f3a);color:#fff}.social-inner{max-width:1250px;margin:auto}.social h2{text-align:center;font-size:2.2rem}.social-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:30px}.social-card{padding:20px;border-radius:18px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.11)}.social-card i{font-size:1.3rem}.social-card a{color:#fff;display:block;margin-top:12px;font-size:.86rem}
+footer{background:#020b14;color:#aebed0;padding:35px 7%;text-align:center}.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.9);display:none;align-items:center;justify-content:center;z-index:999;padding:20px}.lightbox.open{display:flex}.lightbox img{max-width:95vw;max-height:90vh;border-radius:12px}
+@media(max-width:950px){.layout{grid-template-columns:1fr}.info{position:static}.social-grid{grid-template-columns:repeat(3,1fr)}}@media(max-width:650px){.brand span{display:none}.main-img{height:300px}.thumbs{grid-template-columns:repeat(3,1fr)}.features,.appt-grid{grid-template-columns:1fr}.full{grid-column:auto}.social-grid{grid-template-columns:1fr 1fr}}@media(max-width:430px){.social-grid{grid-template-columns:1fr}.main-img{height:240px}}
+</style>
+</head>
+<body>
+<header><div class="nav"><div class="brand"><img src="Logo.png"><div><strong>Bienestar Soluciones Inmobiliarias</strong><span>Compra · Venta · Renta · Avalúos</span></div></div><a class="back" href="Index_Automatizado.html" onclick="if(history.length>1){history.back();return false}"><i class="fa-solid fa-arrow-left"></i> Regresar</a></div></header>
+<main class="container" id="content"><div class="loading"><div><i class="fa-solid fa-spinner fa-spin" style="font-size:2rem;color:#0b4ea2"></i><p style="margin-top:10px">Cargando propiedad...</p></div></div></main>
+
+<section class="social"><div class="social-inner"><h2>Conecta con nosotros</h2><div class="social-grid">
+<div class="social-card"><i class="fa-brands fa-facebook-f"></i><a href="https://www.facebook.com/profile.php?id=61593302934469" target="_blank">Facebook →</a></div>
+<div class="social-card"><i class="fa-brands fa-instagram"></i><a href="https://www.instagram.com/bienestarbalbuena/" target="_blank">Instagram →</a></div>
+<div class="social-card"><i class="fa-brands fa-tiktok"></i><a href="https://www.tiktok.com/@user7132467735540" target="_blank">TikTok →</a></div>
+<div class="social-card"><i class="fa-brands fa-youtube"></i><a href="https://www.youtube.com/channel/UCkHC0LoXGEL6C-Z6f7difQA" target="_blank">YouTube →</a></div>
+<div class="social-card"><i class="fa-solid fa-envelope"></i><a href="mailto:bienestarbalbuena@gmail.com">Correo →</a></div>
+</div></div></section>
+<footer>© 2026 Bienestar Soluciones Inmobiliarias · Jardín Balbuena, Ciudad de México</footer>
+<div id="lightbox" class="lightbox" onclick="this.classList.remove('open')"><img id="lightboxImg"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script>
+<script>
+"use strict";
+const ADVISOR_PHOTOS={"Cristian Montaño":"Cristian.jpeg","Raquel Ortega":"Raquel.jpeg","Samuel Palafox":"Samuel.jpeg","Yadira Sanchez":"Yadira.jpeg","Angel Nuñez":"Angel.jpeg","Elvira Ortega":"Elvira.jpeg"};
+const OFFICE_PHONE="525555295713";
+let currentProperty=null;
+function esc(v){return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
+function mxn(v){return new Intl.NumberFormat("es-MX",{style:"currency",currency:"MXN",maximumFractionDigits:0}).format(Number(v||0))}
+function changeImage(src,el){mainImage.src=src;document.querySelectorAll(".thumbs img").forEach(x=>x.classList.remove("active"));el.classList.add("active")}
+function zoom(src){lightboxImg.src=src;lightbox.classList.add("open")}
+async function shareProperty(){
+  if(!currentProperty)return;
+  const data={title:currentProperty.title,text:`Mira esta propiedad de Bienestar Soluciones Inmobiliarias: ${currentProperty.title}`,url:location.href};
+  if(navigator.share){try{await navigator.share(data);return}catch{}}
+  await navigator.clipboard.writeText(location.href);alert("Enlace copiado.");
+}
+async function requestAppointment(e){
+  e.preventDefault();const msg=document.getElementById("appointmentStatus");msg.textContent="Enviando solicitud...";
+  const p=currentProperty;
+  const record={property_id:p.id,property_title:p.title,customer_name:aName.value.trim(),phone:aPhone.value.trim(),email:aEmail.value.trim()||null,visit_date:aDate.value,visit_time:aTime.value,message:aMessage.value.trim()||null,advisor_name:p.advisor_name||null,advisor_phone:p.advisor_phone||null};
+  const {error}=await sb.from("appointments").insert(record);
+  if(error){msg.textContent="❌ "+error.message;return}
+  msg.textContent="✅ Solicitud enviada. El asesor podrá contactarte para confirmar.";appointmentForm.reset();
+}
+async function load(){
+  const slug=new URLSearchParams(location.search).get("slug");
+  const {data:p,error}=await sb.from("properties").select("*").eq("slug",slug).eq("published",true).single();
+  if(error||!p){content.innerHTML="<div class='loading'><div><h1>Propiedad no encontrada</h1><a class='back' href='Index_Automatizado.html' style='margin-top:15px'>Volver al inicio</a></div></div>";return}
+  currentProperty=p;document.title=`${p.title} | Bienestar`;
+  const images=Array.isArray(p.image_urls)&&p.image_urls.length?p.image_urls:["Logo.png"];
+  const advisor=p.advisor_name||"Bienestar Soluciones Inmobiliarias", phone=p.advisor_phone||OFFICE_PHONE;
+  const photo=ADVISOR_PHOTOS[advisor]||"Logo.png";
+  const waText=encodeURIComponent(`Hola ${advisor}, vi la propiedad "${p.title}" en la página de Bienestar y me gustaría recibir más información.`);
+  const badge=p.status==="vendida"?"Vendida":p.status==="rentada"?"Rentada":p.status==="apartada"?"Apartada":(p.badge||(p.operation==="venta"?"En Venta":"Disponible"));
+  content.innerHTML=`
+  <div class="layout"><div>
+    <section class="card gallery-card"><div class="main-wrap"><img id="mainImage" class="main-img" src="${esc(images[0])}" onclick="zoom(this.src)"><div class="count">${images.length} fotos</div></div><div class="thumbs">${images.map((u,i)=>`<img class="${i===0?"active":""}" src="${esc(u)}" onclick="changeImage(this.src,this)">`).join("")}</div></section>
+    <section class="card description"><h2>Descripción</h2><p>${esc(p.description)}</p></section>
+    <section class="card advisor"><h2>Asesor responsable</h2><div class="advisor-wrap"><img class="advisor-photo" src="${esc(photo)}" onerror="this.src='Logo.png'"><div><strong>${esc(advisor)}</strong><br><small>Contacto directo para esta propiedad.</small></div></div></section>
+    <section class="card appointment"><h2>Agendar visita</h2><p style="color:#64748b;margin-bottom:15px">Selecciona una fecha y horario. La solicitud aparecerá en la agenda del panel administrativo.</p>
+      <form id="appointmentForm" onsubmit="requestAppointment(event)"><div class="appt-grid">
+        <div class="field"><label>Nombre</label><input id="aName" required></div><div class="field"><label>Teléfono</label><input id="aPhone" required></div>
+        <div class="field"><label>Correo</label><input id="aEmail" type="email"></div><div class="field"><label>Fecha</label><input id="aDate" type="date" required></div>
+        <div class="field"><label>Hora</label><input id="aTime" type="time" required></div><div class="field full"><label>Mensaje</label><textarea id="aMessage" placeholder="Algún comentario o pregunta adicional..."></textarea></div>
+      </div><button class="submit">Solicitar visita</button><div id="appointmentStatus" style="margin-top:10px;font-weight:600"></div></form>
+    </section>
+  </div>
+  <aside class="card info"><span class="badge">${esc(badge)}</span><div class="price">${mxn(p.price)}${p.operation==="renta"?" / mes":""}</div><h1>${esc(p.title)}</h1><div class="location"><i class="fa-solid fa-location-dot"></i> ${esc(p.location)}</div>
+    <div class="features"><div class="feature">🛏 ${Number(p.bedrooms||0)} recámaras</div><div class="feature">🚿 ${Number(p.bathrooms||0)} baños</div><div class="feature">🚗 ${Number(p.parking||0)} estacionamientos</div><div class="feature">🏠 ${Number(p.construction_m2||0)} m² construcción</div><div class="feature">📐 ${Number(p.land_m2||0)} m² terreno</div><div class="feature">${esc(p.property_type||"Inmueble")}</div></div>
+    <div class="cta"><a class="wa" target="_blank" href="https://wa.me/${phone}?text=${waText}"><i class="fa-brands fa-whatsapp"></i> Información con ${esc(advisor)}</a><a class="call" href="tel:+${phone}"><i class="fa-solid fa-phone"></i> Llamar al asesor</a><button class="share" onclick="shareProperty()"><i class="fa-solid fa-share-nodes"></i> Compartir propiedad</button></div>
+  </aside></div>`;
+  aDate.min=new Date().toISOString().split("T")[0];
+}
+load();
+</script>
+</body></html>

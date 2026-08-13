@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Casa en venta en Cuernavaca. Conoce sus características y solicita información con Bienestar Soluciones Inmobiliarias.">
+<title>Casa en Venta en Cuernavaca | Bienestar Soluciones Inmobiliarias</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+:root{
+    --primary:#0b4ea2;
+    --primary-light:#2d7de0;
+    --dark:#07182c;
+    --dark-soft:#0d2948;
+    --light:#f5f7fb;
+    --white:#ffffff;
+    --text:#334155;
+    --muted:#64748b;
+    --border:rgba(15,23,42,.09);
+    --shadow:0 18px 45px rgba(2,27,58,.12);
+    --shadow-hover:0 24px 55px rgba(2,27,58,.18);
+    --radius:24px;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;scroll-behavior:smooth}
+html{scroll-padding-top:100px}
+body{
+    font-family:'Poppins',sans-serif;
+    background:linear-gradient(180deg,#f8faff 0%,var(--light) 55%,#eef3f9 100%);
+    color:var(--text);
+    overflow-x:hidden;
+}
+body.modal-open{overflow:hidden}
+a{color:inherit}
+img{max-width:100%;display:block}
+button,a{-webkit-tap-highlight-color:transparent}
+
+/* HEADER */
+header{
+    position:sticky;
+    top:0;
+    z-index:1000;
+    background:rgba(7,24,44,.94);
+    color:white;
+    border-bottom:1px solid rgba(255,255,255,.08);
+    box-shadow:0 8px 30px rgba(0,0,0,.16);
+    backdrop-filter:blur(16px);
+}
+nav{
+    max-width:1280px;
+    margin:auto;
+    padding:14px 24px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:24px;
+}
+.brand{display:flex;align-items:center;gap:14px;text-decoration:none}
+.brand img{width:68px;height:68px;object-fit:contain;background:white;border-radius:14px;padding:6px}
+.logo{font-size:1.15rem;font-weight:700;line-height:1.25}
+.logo span{display:block;color:#bdd1e7;font-size:.78rem;font-weight:400;margin-top:3px}
+.header-actions{display:flex;align-items:center;gap:12px}
+.back-btn,.header-contact{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+    text-decoration:none;
+    color:white;
+    padding:12px 19px;
+    border-radius:13px;
+    font-weight:600;
+    transition:.3s ease;
+}
+.back-btn{border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06)}
+.header-contact{background:linear-gradient(135deg,var(--primary),var(--primary-light));box-shadow:0 10px 24px rgba(11,78,162,.3)}
+.back-btn:hover,.header-contact:hover{transform:translateY(-3px)}
+
+/* MAIN */
+.container{max-width:1280px;margin:auto;padding:48px 24px 80px}
+.breadcrumb{display:flex;flex-wrap:wrap;align-items:center;gap:9px;color:var(--muted);font-size:.9rem;margin-bottom:24px}
+.breadcrumb a{text-decoration:none;color:var(--primary);font-weight:600}
+.property-layout{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(320px,.75fr);gap:30px;align-items:start}
+
+/* GALERÍA */
+.gallery-panel{position:relative}
+.main-image-wrap{position:relative;overflow:hidden;border-radius:30px;box-shadow:var(--shadow);background:#dce5ef}
+.main-image{width:100%;height:590px;object-fit:cover;transition:opacity .22s ease,transform .5s ease;cursor:zoom-in}
+.main-image-wrap:hover .main-image{transform:scale(1.015)}
+.image-badge{position:absolute;top:22px;left:22px;background:rgba(7,24,44,.9);color:white;padding:10px 17px;border-radius:999px;font-size:.85rem;font-weight:600;backdrop-filter:blur(10px)}
+.image-counter{position:absolute;right:20px;bottom:20px;background:rgba(7,24,44,.82);color:white;padding:9px 14px;border-radius:999px;font-size:.82rem;backdrop-filter:blur(10px)}
+.gallery{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:16px}
+.gallery button{padding:0;border:0;background:none;border-radius:15px;cursor:pointer;overflow:hidden;position:relative}
+.gallery img{width:100%;height:105px;object-fit:cover;border-radius:15px;transition:.3s ease;border:3px solid transparent}
+.gallery button:hover img,.gallery button.active img{transform:scale(1.04);border-color:var(--primary)}
+.gallery button.active::after{content:'✓';position:absolute;right:8px;top:8px;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--primary);color:white;font-size:.75rem;font-weight:700}
+
+/* TARJETA LATERAL */
+.property-card{background:rgba(255,255,255,.96);border:1px solid var(--border);padding:30px;border-radius:28px;box-shadow:var(--shadow);position:sticky;top:115px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--primary);font-weight:700;font-size:.82rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
+.property-card h1{font-size:clamp(1.8rem,3vw,2.55rem);line-height:1.18;color:var(--dark);margin-bottom:12px}
+.location-text{display:flex;align-items:center;gap:9px;color:var(--muted);margin-bottom:20px}
+.price{font-size:2rem;color:var(--primary);font-weight:700;margin-bottom:5px}
+.price-note{font-size:.82rem;color:var(--muted);margin-bottom:22px}
+.quick-features{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin:24px 0}
+.quick-feature{display:flex;align-items:center;gap:11px;background:#f1f6fd;border:1px solid #e4edf8;padding:13px;border-radius:15px;font-size:.9rem;font-weight:500}
+.quick-feature i{color:var(--primary);font-size:1.05rem;width:20px;text-align:center}
+.contact-box{display:grid;gap:11px;margin-top:24px}
+.whatsapp-btn,.call-btn,.share-btn{
+    border:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    text-decoration:none;
+    padding:15px 18px;
+    border-radius:14px;
+    font-family:inherit;
+    font-weight:600;
+    cursor:pointer;
+    transition:.3s ease;
+}
+.whatsapp-btn{background:#25d366;color:white;box-shadow:0 12px 25px rgba(37,211,102,.23)}
+.call-btn{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:white}
+.share-btn{background:#edf3fa;color:var(--dark)}
+.whatsapp-btn:hover,.call-btn:hover,.share-btn:hover{transform:translateY(-3px);box-shadow:var(--shadow-hover)}
+.trust-note{display:flex;align-items:flex-start;gap:10px;margin-top:20px;padding-top:20px;border-top:1px solid var(--border);font-size:.82rem;color:var(--muted);line-height:1.6}
+.trust-note i{color:var(--primary);margin-top:3px}
+
+/* CONTENIDO */
+.details-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(280px,.75fr);gap:28px;margin-top:34px}
+.content-card{background:white;border:1px solid var(--border);padding:34px;border-radius:26px;box-shadow:0 12px 35px rgba(2,27,58,.08)}
+.content-card h2{font-size:1.55rem;color:var(--dark);margin-bottom:18px}
+.description{line-height:1.9;color:#526075}
+.description p+p{margin-top:15px}
+.feature-list{display:grid;grid-template-columns:repeat(2,1fr);gap:13px;margin-top:24px}
+.feature{display:flex;align-items:center;gap:12px;background:#f6f9fd;padding:15px;border-radius:15px;border:1px solid #e7edf5;transition:.3s ease}
+.feature i{color:var(--primary);font-size:1.1rem;width:22px;text-align:center}
+.feature:hover{transform:translateY(-3px);border-color:rgba(11,78,162,.25)}
+.info-list{list-style:none;display:grid;gap:14px}
+.info-list li{display:flex;align-items:flex-start;gap:12px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.info-list li:last-child{border-bottom:0;padding-bottom:0}
+.info-list i{color:var(--primary);margin-top:4px;width:18px;text-align:center}
+.info-list strong{display:block;color:var(--dark);font-size:.88rem;margin-bottom:2px}
+.info-list span{color:var(--muted);font-size:.9rem}
+
+/* REDES */
+.social-section{margin-top:34px;padding:48px 34px;border-radius:30px;background:linear-gradient(135deg,#07182c,#0c3158);color:white;position:relative;overflow:hidden}
+.social-section::before{content:'';position:absolute;width:330px;height:330px;border-radius:50%;background:rgba(45,125,224,.22);filter:blur(8px);right:-120px;top:-150px}
+.social-heading{position:relative;text-align:center;max-width:720px;margin:0 auto 30px}
+.social-heading h2{font-size:clamp(1.8rem,4vw,2.5rem);margin-bottom:10px}
+.social-heading p{color:#c6d5e6;line-height:1.7}
+.social-grid{position:relative;display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.social-card{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;text-decoration:none;color:white;padding:24px 14px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.07);border-radius:20px;backdrop-filter:blur(14px);transition:.35s ease}
+.social-card i{font-size:1.8rem}
+.social-card strong{font-size:.95rem}
+.social-card span{font-size:.76rem;color:#c7d7e8}
+.social-card:hover{transform:translateY(-7px);background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.28)}
+
+/* FOOTER */
+footer{background:#030e1b;color:white;padding:55px 24px 26px}
+.footer-grid{max-width:1280px;margin:auto;display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:40px;padding-bottom:34px}
+.footer-brand h3{font-size:1.25rem;margin-bottom:10px}.footer-brand p{color:#aebfd1;line-height:1.8;max-width:470px;font-size:.9rem}
+.footer-column h4{margin-bottom:14px}.footer-column a,.footer-column p{display:block;color:#aebfd1;text-decoration:none;margin-bottom:10px;font-size:.9rem;transition:.25s}.footer-column a:hover{color:white;transform:translateX(4px)}
+.footer-bottom{max-width:1280px;margin:auto;padding-top:24px;border-top:1px solid rgba(255,255,255,.09);display:flex;justify-content:space-between;gap:20px;color:#91a4b8;font-size:.82rem}
+
+/* FLOTANTES */
+.float-whatsapp,.back-top{position:fixed;right:22px;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;color:white;text-decoration:none;border:0;cursor:pointer;box-shadow:0 12px 30px rgba(0,0,0,.25);z-index:1200;transition:.3s ease}
+.float-whatsapp{bottom:22px;background:#25d366;font-size:1.45rem}
+.back-top{bottom:84px;background:var(--primary);font-size:1rem;opacity:0;visibility:hidden;transform:translateY(12px)}
+.back-top.show{opacity:1;visibility:visible;transform:translateY(0)}
+.float-whatsapp:hover,.back-top:hover{transform:translateY(-4px) scale(1.04)}
+
+/* LIGHTBOX */
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.9);display:none;align-items:center;justify-content:center;padding:30px;z-index:2000}
+.lightbox.open{display:flex}.lightbox img{max-width:min(1100px,94vw);max-height:86vh;border-radius:18px;box-shadow:0 25px 80px rgba(0,0,0,.45)}
+.lightbox-close{position:absolute;top:22px;right:24px;width:48px;height:48px;border-radius:50%;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:white;font-size:1.2rem;cursor:pointer}
+
+/* ANIMACIONES */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .75s ease,transform .75s ease}.reveal.visible{opacity:1;transform:none}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(37,211,102,.35)}50%{box-shadow:0 0 0 12px rgba(37,211,102,0)}}
+.float-whatsapp{animation:pulse 2.4s infinite}
+
+@media(max-width:1080px){
+    .property-layout,.details-grid{grid-template-columns:1fr}
+    .property-card{position:relative;top:auto}
+    .main-image{height:500px}
+    .social-grid{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:768px){
+    nav{padding:12px 16px}.brand img{width:54px;height:54px}.logo{font-size:1rem}.logo span{display:none}.header-contact{display:none}
+    .container{padding:28px 15px 60px}.main-image{height:330px}.gallery{grid-template-columns:repeat(5,minmax(100px,1fr));overflow-x:auto;padding-bottom:6px}.gallery button{min-width:100px}.gallery img{height:82px}
+    .property-card,.content-card{padding:24px;border-radius:21px}.quick-features,.feature-list{grid-template-columns:1fr}.social-section{padding:40px 20px}.social-grid{grid-template-columns:repeat(2,1fr)}
+    .footer-grid{grid-template-columns:1fr}.footer-bottom{flex-direction:column;text-align:center}.float-whatsapp,.back-top{right:15px}
+}
+@media(max-width:480px){
+    .back-btn{padding:10px 13px;font-size:.82rem}.back-btn span{display:none}.main-image{height:245px;border-radius:21px}.image-badge{top:14px;left:14px;padding:8px 12px}.image-counter{right:12px;bottom:12px}
+    .property-card h1{font-size:1.65rem}.price{font-size:1.7rem}.social-grid{grid-template-columns:1fr}.social-card{flex-direction:row;text-align:left;justify-content:flex-start}.social-card i{width:35px;text-align:center}.social-card span{margin-left:auto}
+}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<header>
+    <nav>
+        <a class="brand" href="Index_mejorado.html" aria-label="Volver a Bienestar Soluciones Inmobiliarias">
+            <img src="Logo.png" alt="Logo de Bienestar Soluciones Inmobiliarias">
+            <div class="logo">Bienestar<span>Soluciones Inmobiliarias</span></div>
+        </a>
+        <div class="header-actions">
+            <a href="Index_mejorado.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i><span>Regresar</span></a>
+            <a href="https://wa.me/525564759277?text=Hola,%20quiero%20información%20sobre%20la%20casa%20en%20Cuernavaca" target="_blank" rel="noopener" class="header-contact"><i class="fa-brands fa-whatsapp"></i>Contactar</a>
+        </div>
+    </nav>
+</header>
+
+<main class="container">
+    <div class="breadcrumb reveal">
+        <a href="Index_mejorado.html">Inicio</a><i class="fa-solid fa-chevron-right"></i><span>Propiedades</span><i class="fa-solid fa-chevron-right"></i><span>Casa en Cuernavaca</span>
+    </div>
+
+    <section class="property-layout">
+        <div class="gallery-panel reveal">
+            <div class="main-image-wrap">
+                <img id="mainImage" class="main-image" src="Copilot1.png" alt="Vista principal de casa en venta en Cuernavaca" onclick="openLightbox()">
+                <span class="image-badge"><i class="fa-solid fa-house"></i> En venta</span>
+                <span class="image-counter" id="imageCounter">1 de 5</span>
+            </div>
+
+            <div class="gallery" aria-label="Galería de la propiedad">
+                <button class="active" onclick="changeImage(this, 'Copilot1.png', 1)" aria-label="Ver imagen 1"><img src="Copilot1.png" alt="Fachada de la propiedad"></button>
+                <button onclick="changeImage(this, 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=2070&auto=format&fit=crop', 2)" aria-label="Ver imagen 2"><img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=2070&auto=format&fit=crop" alt="Interior moderno de la propiedad"></button>
+                <button onclick="changeImage(this, 'Copilot2.png', 3)" aria-label="Ver imagen 3"><img src="Copilot2.png" alt="Área interior de la propiedad"></button>
+                <button onclick="changeImage(this, 'Copilot3.png', 4)" aria-label="Ver imagen 4"><img src="Copilot3.png" alt="Habitación de la propiedad"></button>
+                <button onclick="changeImage(this, 'Copilot4.png', 5)" aria-label="Ver imagen 5"><img src="Copilot4.png" alt="Área exterior de la propiedad"></button>
+            </div>
+        </div>
+
+        <aside class="property-card reveal">
+            <span class="eyebrow"><i class="fa-solid fa-certificate"></i> Propiedad destacada</span>
+            <h1>Casa en Venta en Cuernavaca</h1>
+            <p class="location-text"><i class="fa-solid fa-location-dot"></i> Cuernavaca, Morelos</p>
+            <div class="price">$3,850,000 MXN</div>
+            <p class="price-note">Precio sujeto a disponibilidad y cambios sin previo aviso.</p>
+
+            <div class="quick-features">
+                <div class="quick-feature"><i class="fa-solid fa-bed"></i>4 recámaras</div>
+                <div class="quick-feature"><i class="fa-solid fa-bath"></i>3 baños</div>
+                <div class="quick-feature"><i class="fa-solid fa-car"></i>2 autos</div>
+                <div class="quick-feature"><i class="fa-solid fa-ruler-combined"></i>220 m²</div>
+            </div>
+
+            <div class="contact-box">
+                <a class="whatsapp-btn" href="https://wa.me/525564759277?text=Hola,%20quiero%20más%20información%20sobre%20la%20casa%20en%20venta%20en%20Cuernavaca" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i>Solicitar información</a>
+                <a class="call-btn" href="tel:+525555295713"><i class="fa-solid fa-phone"></i>Llamar a la inmobiliaria</a>
+                <button class="share-btn" onclick="shareProperty()"><i class="fa-solid fa-share-nodes"></i>Compartir propiedad</button>
+            </div>
+
+            <div class="trust-note"><i class="fa-solid fa-shield-halved"></i><span>Recibe acompañamiento profesional durante todo el proceso de compra.</span></div>
+        </aside>
+    </section>
+
+    <section class="details-grid">
+        <article class="content-card reveal">
+            <div class="description">
+                <h2>Descripción de la propiedad</h2>
+                <p>Hermosa residencia ubicada en una de las zonas con mayor plusvalía de Cuernavaca. Cuenta con amplios espacios, jardín privado, cocina equipada, área de lavado, estacionamiento para dos vehículos y vigilancia 24/7.</p>
+                <p>Su distribución está diseñada para ofrecer comodidad, privacidad y una excelente iluminación natural, ideal para familias que buscan tranquilidad sin alejarse de servicios esenciales.</p>
+            </div>
+
+            <div class="feature-list">
+                <div class="feature"><i class="fa-solid fa-bed"></i>4 recámaras</div>
+                <div class="feature"><i class="fa-solid fa-bath"></i>3 baños completos</div>
+                <div class="feature"><i class="fa-solid fa-car"></i>2 estacionamientos</div>
+                <div class="feature"><i class="fa-solid fa-vector-square"></i>280 m² de terreno</div>
+                <div class="feature"><i class="fa-solid fa-house"></i>220 m² de construcción</div>
+                <div class="feature"><i class="fa-solid fa-tree"></i>Jardín privado</div>
+                <div class="feature"><i class="fa-solid fa-kitchen-set"></i>Cocina equipada</div>
+                <div class="feature"><i class="fa-solid fa-shield-halved"></i>Vigilancia 24/7</div>
+            </div>
+        </article>
+
+        <aside class="content-card reveal">
+            <h2>Información adicional</h2>
+            <ul class="info-list">
+                <li><i class="fa-solid fa-tag"></i><div><strong>Operación</strong><span>Venta</span></div></li>
+                <li><i class="fa-solid fa-house-circle-check"></i><div><strong>Tipo de inmueble</strong><span>Casa residencial</span></div></li>
+                <li><i class="fa-solid fa-location-crosshairs"></i><div><strong>Zona</strong><span>Cuernavaca, Morelos</span></div></li>
+                <li><i class="fa-solid fa-file-contract"></i><div><strong>Documentación</strong><span>Disponible para revisión</span></div></li>
+                <li><i class="fa-solid fa-user-tie"></i><div><strong>Asesoría</strong><span>Bienestar Soluciones Inmobiliarias</span></div></li>
+            </ul>
+        </aside>
+    </section>
+
+    <section class="social-section reveal" id="redes">
+        <div class="social-heading">
+            <h2>Síguenos y descubre más propiedades</h2>
+            <p>Conoce nuestras novedades, inmuebles disponibles y recomendaciones para comprar, vender o rentar con mayor seguridad.</p>
+        </div>
+        <div class="social-grid">
+            <a class="social-card" href="https://www.facebook.com/profile.php?id=61593302934469" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i><strong>Facebook</strong><span>Visitar</span></a>
+            <a class="social-card" href="https://www.instagram.com/bienestarbalbuena/" aria-label="Instagram"><i class="fa-brands fa-instagram"></i><strong>Instagram</strong><span>Visitar</span></a>
+            <a class="social-card" href="https://www.tiktok.com/@user7132467735540" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i><strong>TikTok</strong><span>Visitar</span></a>
+            <a class="social-card" href="https://www.youtube.com/channel/UCkHC0LoXGEL6C-Z6f7difQA" aria-label="YouTube"><i class="fa-brands fa-youtube"></i><strong>YouTube</strong><span>Visitar</span></a>
+            <a class="social-link" href="https://mail.google.com/mail/?view=cm&fs=1&to=bienestarbalbuena@gmail.com&su=Información%20sobre%20una%20propiedad&body=Hola,%20me%20gustaría%20recibir%20más%20información." target="_blank" aria-label="Enviar correo a Bienestar Soluciones Inmobiliarias"> Enviar correo <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="footer-grid">
+        <div class="footer-brand">
+            <h3>Bienestar Soluciones Inmobiliarias</h3>
+            <p>Te ayudamos a comprar, vender o rentar propiedades con atención personalizada, seguridad y acompañamiento profesional.</p>
+        </div>
+        <div class="footer-column">
+            <h4>Enlaces rápidos</h4>
+            <a href="Index_mejorado.html">Inicio</a>
+            <a href="Index_mejorado.html">Propiedades en venta</a>
+            <a href="Index_mejorado.html">Propiedades en renta</a>
+            <a href="Index_mejorado.html">Asesores</a>
+        </div>
+        <div class="footer-column">
+            <h4>Contacto</h4>
+            <p><i class="fa-solid fa-phone"></i> +52 55 5529 5713</p>
+            <p><i class="fa-solid fa-envelope"></i> bienestarbalbuena@gmail.com</p>
+            <p><i class="fa-solid fa-location-dot"></i> Ciudad de México</p>
+        </div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 Bienestar Soluciones Inmobiliarias.</span><span>Todos los derechos reservados.</span></div>
+</footer>
+
+<a class="float-whatsapp" href="https://wa.me/525564759277?text=Hola,%20quiero%20información%20sobre%20la%20casa%20en%20Cuernavaca" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba"><i class="fa-solid fa-arrow-up"></i></button>
+
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+    <button class="lightbox-close" onclick="closeLightbox(event)" aria-label="Cerrar imagen"><i class="fa-solid fa-xmark"></i></button>
+    <img id="lightboxImage" src="Copilot1.png" alt="Vista ampliada de la propiedad">
+</div>
+
+<script>
+const mainImage = document.getElementById('mainImage');
+const imageCounter = document.getElementById('imageCounter');
+const backTop = document.getElementById('backTop');
+const lightbox = document.getElementById('lightbox');
+const lightboxImage = document.getElementById('lightboxImage');
+
+function changeImage(button, src, index){
+    mainImage.style.opacity = '0';
+    document.querySelectorAll('.gallery button').forEach(item => item.classList.remove('active'));
+    button.classList.add('active');
+    setTimeout(() => {
+        mainImage.src = src;
+        mainImage.style.opacity = '1';
+        imageCounter.textContent = `${index} de 5`;
+    }, 160);
+}
+
+function openLightbox(){
+    lightboxImage.src = mainImage.src;
+    lightbox.classList.add('open');
+    document.body.classList.add('modal-open');
+}
+
+function closeLightbox(event){
+    if(event && event.target !== lightbox && !event.currentTarget.classList.contains('lightbox-close')) return;
+    lightbox.classList.remove('open');
+    document.body.classList.remove('modal-open');
+}
+
+async function shareProperty(){
+    const shareData = {
+        title: 'Casa en Venta en Cuernavaca',
+        text: 'Mira esta propiedad de Bienestar Soluciones Inmobiliarias.',
+        url: window.location.href
+    };
+
+    try{
+        if(navigator.share){
+            await navigator.share(shareData);
+        }else{
+            await navigator.clipboard.writeText(window.location.href);
+            alert('El enlace de la propiedad se copió al portapapeles.');
+        }
+    }catch(error){
+        if(error.name !== 'AbortError') alert('No fue posible compartir la propiedad.');
+    }
+}
+
+const revealObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+        if(entry.isIntersecting){
+            entry.target.classList.add('visible');
+            revealObserver.unobserve(entry.target);
+        }
+    });
+}, {threshold:.12});
+
+document.querySelectorAll('.reveal').forEach(element => revealObserver.observe(element));
+
+window.addEventListener('scroll', () => {
+    backTop.classList.toggle('show', window.scrollY > 500);
+});
+
+document.addEventListener('keydown', event => {
+    if(event.key === 'Escape' && lightbox.classList.contains('open')){
+        lightbox.classList.remove('open');
+        document.body.classList.remove('modal-open');
+    }
+});
+</script>
+</body>
+</html>
