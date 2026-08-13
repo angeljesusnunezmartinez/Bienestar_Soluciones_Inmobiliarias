@@ -24,7 +24,7 @@ footer{background:#020b14;color:#aebed0;padding:35px 7%;text-align:center}.light
 </style>
 </head>
 <body>
-<header><div class="nav"><div class="brand"><img src="Logo.png"><div><strong>Bienestar Soluciones Inmobiliarias</strong><span>Compra · Venta · Renta · Avalúos</span></div></div><a class="back" href="Index_Automatizado.html" onclick="if(history.length>1){history.back();return false}"><i class="fa-solid fa-arrow-left"></i> Regresar</a></div></header>
+<header><div class="nav"><div class="brand"><img src="Logo.png"><div><strong>Bienestar Soluciones Inmobiliarias</strong><span>Compra · Venta · Renta · Avalúos</span></div></div><a class="back" href="index.html" onclick="if(history.length>1){history.back();return false}"><i class="fa-solid fa-arrow-left"></i> Regresar</a></div></header>
 <main class="container" id="content"><div class="loading"><div><i class="fa-solid fa-spinner fa-spin" style="font-size:2rem;color:#0b4ea2"></i><p style="margin-top:10px">Cargando propiedad...</p></div></div></main>
 
 <section class="social"><div class="social-inner"><h2>Conecta con nosotros</h2><div class="social-grid">
@@ -64,7 +64,7 @@ async function requestAppointment(e){
 async function load(){
   const slug=new URLSearchParams(location.search).get("slug");
   const {data:p,error}=await sb.from("properties").select("*").eq("slug",slug).eq("published",true).single();
-  if(error||!p){content.innerHTML="<div class='loading'><div><h1>Propiedad no encontrada</h1><a class='back' href='Index_Automatizado.html' style='margin-top:15px'>Volver al inicio</a></div></div>";return}
+  if(error||!p){content.innerHTML="<div class='loading'><div><h1>Propiedad no encontrada</h1><a class='back' href='index.html' style='margin-top:15px'>Volver al inicio</a></div></div>";return}
   currentProperty=p;document.title=`${p.title} | Bienestar`;
   const images=Array.isArray(p.image_urls)&&p.image_urls.length?p.image_urls:["Logo.png"];
   const advisor=p.advisor_name||"Bienestar Soluciones Inmobiliarias", phone=p.advisor_phone||OFFICE_PHONE;
