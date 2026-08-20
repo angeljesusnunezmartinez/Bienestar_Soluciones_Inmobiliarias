@@ -71,6 +71,12 @@ button{cursor:pointer}
 .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
 .toolbar input,.toolbar select{padding:11px 12px;border:1px solid var(--border);border-radius:11px}
 .property-list,.crm-list{display:grid;gap:12px}
+.advisor-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.advisor-card{border:1px solid #e5ebf2;border-radius:18px;padding:18px;background:#fff}
+.advisor-card-top{display:flex;gap:14px;align-items:center}
+.advisor-avatar{width:70px;height:70px;border-radius:18px;object-fit:cover;border:1px solid var(--border);background:#f2f4f7}
+.advisor-card h4{margin:0;color:var(--primary);font-size:1rem}
+.advisor-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
 .row-card{border:1px solid #e5ebf2;border-radius:16px;padding:16px;background:#fff}
 .row-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
 .row-title{font-weight:700;color:var(--primary)}
@@ -93,11 +99,11 @@ button{cursor:pointer}
 .modal-box{width:min(950px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:24px;padding:28px;position:relative}
 .modal-close{position:absolute;right:18px;top:18px;border:0;background:#eef4ff;color:var(--secondary);width:40px;height:40px;border-radius:50%}
 .table-empty{text-align:center;padding:30px;color:var(--muted)}
-@media(max-width:1150px){.cards{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:1150px){.cards{grid-template-columns:repeat(3,1fr)}.advisor-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:850px){
   .sidebar{position:static;width:100%;padding:14px}.side-nav{grid-template-columns:repeat(3,1fr)}
   .side-nav button,.side-nav a{justify-content:center;font-size:.8rem}.main{margin-left:0;padding:20px}
-  .cards{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.full{grid-column:auto}
+  .cards{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.full{grid-column:auto}.advisor-grid{grid-template-columns:1fr}
 }
 @media(max-width:520px){.cards{grid-template-columns:1fr}.side-nav{grid-template-columns:repeat(2,1fr)}.topbar{align-items:flex-start;flex-direction:column}}
 </style>
@@ -132,6 +138,7 @@ button{cursor:pointer}
       <button class="active" data-section="dashboard"><i class="fa-solid fa-chart-pie"></i> Dashboard</button>
       <button data-section="properties"><i class="fa-solid fa-building"></i> Inmuebles</button>
       <button data-section="publish"><i class="fa-solid fa-plus"></i> Publicar</button>
+      <button data-section="advisors"><i class="fa-solid fa-user-tie"></i> Asesores</button>
       <button data-section="leads"><i class="fa-solid fa-user-group"></i> Prospectos</button>
       <button data-section="appointments"><i class="fa-solid fa-calendar-check"></i> Citas</button>
       <a href="./"><i class="fa-solid fa-arrow-up-right-from-square"></i> Ver página</a>
@@ -208,6 +215,14 @@ button{cursor:pointer}
       </div>
     </section>
 
+    <section id="advisors" class="section">
+      <div class="panel">
+        <div class="row-head"><div><h3 style="margin-bottom:4px">Administrar asesores</h3><div class="muted">Altas, edición, activación, bajas y Asesor del Mes.</div></div>
+        <button class="btn btn-primary" onclick="openAdvisorModal()"><i class="fa-solid fa-user-plus"></i> Agregar asesor</button></div>
+        <div id="advisorList" class="advisor-grid" style="margin-top:20px"></div>
+      </div>
+    </section>
+
     <section id="leads" class="section">
       <div class="panel">
         <h3>CRM · Prospectos</h3>
@@ -271,26 +286,36 @@ button{cursor:pointer}
   </div>
 </div>
 
+<div id="advisorModal" class="modal">
+  <div class="modal-box" style="width:min(760px,100%)">
+    <button class="modal-close" onclick="closeAdvisorModal()"><i class="fa-solid fa-xmark"></i></button>
+    <h3 style="color:#021b3a">Datos del asesor</h3>
+    <form id="advisorForm"><input type="hidden" id="aId"><div class="grid">
+      <div class="field"><label>Nombre</label><input id="aName" required></div>
+      <div class="field"><label>Teléfono / WhatsApp</label><input id="aPhone" required placeholder="5255..."></div>
+      <div class="field"><label>Correo</label><input id="aEmail" type="email"></div>
+      <div class="field"><label>Cargo</label><input id="aPosition" value="Asesor Inmobiliario"></div>
+      <div class="field full"><label>Fotografía</label><input id="aPhoto" placeholder="Ej. Angel.jpeg o URL"></div>
+      <div class="field full"><label>Descripción</label><textarea id="aDescription"></textarea></div>
+      <div class="field"><label>Estado</label><select id="aActive"><option value="true">Activo</option><option value="false">Inactivo</option></select></div>
+    </div><div class="form-actions"><button class="btn btn-primary" type="submit"><i class="fa-solid fa-floppy-disk"></i> Guardar asesor</button></div>
+    <div id="advisorStatus" class="status-msg"></div></form>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
 <script>
 "use strict";
 
-const ADVISORS=[
-  {name:"Cristian Montaño",phone:"525561793961"},
-  {name:"Raquel Ortega",phone:"525523321483"},
-  {name:"Samuel Palafox",phone:"525564759277"},
-  {name:"Yadira Sanchez",phone:"525564759277"},
-  {name:"Angel Nuñez",phone:"525512996301"},
-  {name:"Elvira Ortega",phone:"525512996301"}
-];
+let advisors=[];
 
 let properties=[], leads=[], appointments=[];
 
 function esc(v){return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
 function mxn(v){return new Intl.NumberFormat("es-MX",{style:"currency",currency:"MXN",maximumFractionDigits:0}).format(Number(v||0))}
-function advisorValue(name){const a=ADVISORS.find(x=>x.name===name);return a?`${a.name}|${a.phone}`:""}
-function advisorOptions(selected=""){return `<option value="">Sin asignar</option>`+ADVISORS.map(a=>`<option value="${a.name}|${a.phone}" ${a.name===selected?"selected":""}>${a.name}</option>`).join("")}
+function advisorValue(name){const a=advisors.find(x=>x.name===name);return a?`${a.name}|${a.phone}`:""}
+function advisorOptions(selected="",includeInactive=false){const list=advisors.filter(a=>a.active||includeInactive||a.name===selected);return `<option value="">Sin asignar</option>`+list.map(a=>`<option value="${a.name}|${a.phone}" ${a.name===selected?"selected":""}>${a.name}${a.active?"":" (Inactivo)"}</option>`).join("")}
 function splitAdvisor(v){const [name,phone]=String(v||"").split("|");return {name:name||null,phone:phone||null}}
 function slugify(t){return t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"")+"-"+Date.now()}
 
@@ -306,25 +331,26 @@ async function openApp(){
   const {data:{session}}=await sb.auth.getSession();
   if(!session)return;
   loginView.classList.add("hidden");appView.classList.remove("hidden");
-  pAdvisor.innerHTML=advisorOptions();
-  eAdvisor.innerHTML=advisorOptions();
   await refreshAll();
 }
 async function refreshAll(){
-  const [p,l,a]=await Promise.all([
+  const [p,l,a,adv]=await Promise.all([
     sb.from("properties").select("*").order("created_at",{ascending:false}),
     sb.from("leads").select("*").order("created_at",{ascending:false}),
-    sb.from("appointments").select("*").order("visit_date",{ascending:true})
+    sb.from("appointments").select("*").order("visit_date",{ascending:true}),
+    sb.from("advisors").select("*").order("name",{ascending:true})
   ]);
   if(p.error)console.error(p.error); else properties=p.data||[];
   if(l.error)console.error(l.error); else leads=l.data||[];
   if(a.error)console.error(a.error); else appointments=a.data||[];
-  renderDashboard();renderProperties();renderLeads();renderAppointments();
+  if(adv.error)console.error(adv.error); else advisors=adv.data||[];
+  pAdvisor.innerHTML=advisorOptions();eAdvisor.innerHTML=advisorOptions("",true);
+  renderDashboard();renderProperties();renderAdvisors();renderLeads();renderAppointments();
 }
 function showSection(id){
   document.querySelectorAll(".section").forEach(s=>s.classList.toggle("active",s.id===id));
   document.querySelectorAll(".side-nav button[data-section]").forEach(b=>b.classList.toggle("active",b.dataset.section===id));
-  const labels={dashboard:"Dashboard",properties:"Inmuebles",publish:"Publicar inmueble",leads:"Prospectos",appointments:"Agenda de visitas"};
+  const labels={dashboard:"Dashboard",properties:"Inmuebles",publish:"Publicar inmueble",advisors:"Asesores",leads:"Prospectos",appointments:"Agenda de visitas"};
   sectionTitle.textContent=labels[id]||"Administración";
 }
 document.querySelectorAll(".side-nav button[data-section]").forEach(b=>b.addEventListener("click",()=>showSection(b.dataset.section)));
@@ -410,7 +436,7 @@ function openEdit(id){
   eId.value=p.id;eTitle.value=p.title;eOperation.value=p.operation;eType.value=p.property_type||"";
   ePrice.value=p.price;eLocation.value=p.location;eBedrooms.value=p.bedrooms;eBathrooms.value=p.bathrooms;
   eParking.value=p.parking;eLand.value=p.land_m2;eConstruction.value=p.construction_m2;eBadge.value=p.badge||"";
-  eAdvisor.innerHTML=advisorOptions(p.advisor_name);eStatus.value=p.status;eFeatured.value=String(!!p.featured);
+  eAdvisor.innerHTML=advisorOptions(p.advisor_name,true);eStatus.value=p.status;eFeatured.value=String(!!p.featured);
   ePublished.value=String(!!p.published);eDescription.value=p.description;eOldImages.value=JSON.stringify(p.image_urls||[]);
   editStatus.textContent="";editModal.classList.add("open");
 }
@@ -433,6 +459,31 @@ editForm.addEventListener("submit",async e=>{
     editStatus.textContent="✅ Cambios guardados.";await refreshAll();setTimeout(closeEdit,500);
   }catch(err){editStatus.textContent="❌ "+err.message}
 });
+
+
+function advisorPropertyCount(name){return properties.filter(p=>p.advisor_name===name).length}
+function renderAdvisors(){
+  advisorList.innerHTML=advisors.length?advisors.map(a=>`<div class="advisor-card">
+    <div class="advisor-card-top"><img class="advisor-avatar" src="${esc(a.photo_url||"Logo.png")}" onerror="this.src='Logo.png'"><div>
+    <h4>${esc(a.name)}</h4><div class="meta">${esc(a.position||"Asesor Inmobiliario")}</div>
+    <div class="badges"><span class="badge ${a.active?"green":"gray"}">${a.active?"Activo":"Inactivo"}</span>${a.advisor_of_month?'<span class="badge gold">⭐ Asesor del mes</span>':""}</div></div></div>
+    <div class="meta" style="margin-top:12px"><i class="fa-solid fa-phone"></i> ${esc(a.phone||"Sin teléfono")}</div>
+    ${a.email?`<div class="meta"><i class="fa-solid fa-envelope"></i> ${esc(a.email)}</div>`:""}
+    <div class="meta"><i class="fa-solid fa-house"></i> ${advisorPropertyCount(a.name)} inmueble(s) asignado(s)</div>
+    <div class="advisor-actions">
+      <button class="btn btn-soft" onclick="editAdvisor('${a.id}')"><i class="fa-solid fa-pen"></i> Editar</button>
+      <button class="btn ${a.active?"btn-warning":"btn-success"}" onclick="toggleAdvisorActive('${a.id}',${!a.active})">${a.active?"Desactivar":"Activar"}</button>
+      ${a.active&&!a.advisor_of_month?`<button class="btn btn-soft" onclick="setAdvisorOfMonth('${a.id}')">⭐ Asesor del mes</button>`:""}
+      <button class="btn btn-danger" onclick="deleteAdvisor('${a.id}')"><i class="fa-solid fa-trash"></i> Eliminar</button>
+    </div></div>`).join(""):`<div class="table-empty">No hay asesores registrados.</div>`;
+}
+function openAdvisorModal(){advisorForm.reset();aId.value="";aPosition.value="Asesor Inmobiliario";aActive.value="true";advisorStatus.textContent="";advisorModal.classList.add("open")}
+function closeAdvisorModal(){advisorModal.classList.remove("open")}
+function editAdvisor(id){const a=advisors.find(x=>x.id===id);if(!a)return;aId.value=a.id;aName.value=a.name||"";aPhone.value=a.phone||"";aEmail.value=a.email||"";aPosition.value=a.position||"Asesor Inmobiliario";aPhoto.value=a.photo_url||"";aDescription.value=a.description||"";aActive.value=String(!!a.active);advisorStatus.textContent="";advisorModal.classList.add("open")}
+advisorForm.addEventListener("submit",async e=>{e.preventDefault();advisorStatus.textContent="Guardando...";const record={name:aName.value.trim(),phone:aPhone.value.trim(),email:aEmail.value.trim()||null,position:aPosition.value.trim()||"Asesor Inmobiliario",photo_url:aPhoto.value.trim()||null,description:aDescription.value.trim()||null,active:aActive.value==="true",updated_at:new Date().toISOString()};const r=aId.value?await sb.from("advisors").update(record).eq("id",aId.value):await sb.from("advisors").insert(record);if(r.error){advisorStatus.textContent="❌ "+r.error.message;return}advisorStatus.textContent="✅ Asesor guardado.";await refreshAll();setTimeout(closeAdvisorModal,450)});
+async function toggleAdvisorActive(id,value){const a=advisors.find(x=>x.id===id);if(!a)return;const count=advisorPropertyCount(a.name);if(!value&&count>0){const others=advisors.filter(x=>x.active&&x.id!==id);if(!others.length)return alert("No hay otro asesor activo para reasignar los inmuebles.");const choice=prompt(`${a.name} tiene ${count} inmueble(s).\n\nEscribe el número del asesor al que deseas reasignarlos:\n`+others.map((x,i)=>`${i+1}. ${x.name}`).join("\n"));if(choice===null)return;const target=others[Number(choice)-1];if(!target)return alert("Selección no válida.");const r=await sb.from("properties").update({advisor_name:target.name,advisor_phone:target.phone,updated_at:new Date().toISOString()}).eq("advisor_name",a.name);if(r.error)return alert(r.error.message)}const changes={active:value,updated_at:new Date().toISOString()};if(!value)changes.advisor_of_month=false;const {error}=await sb.from("advisors").update(changes).eq("id",id);if(error)return alert(error.message);await refreshAll()}
+async function setAdvisorOfMonth(id){const a=advisors.find(x=>x.id===id);if(!a||!a.active)return;if(!confirm(`¿Marcar a ${a.name} como Asesor del Mes?`))return;let r=await sb.from("advisors").update({advisor_of_month:false,updated_at:new Date().toISOString()}).neq("id",id);if(r.error)return alert(r.error.message);r=await sb.from("advisors").update({advisor_of_month:true,updated_at:new Date().toISOString()}).eq("id",id);if(r.error)return alert(r.error.message);await refreshAll()}
+async function deleteAdvisor(id){const a=advisors.find(x=>x.id===id);if(!a)return;const count=advisorPropertyCount(a.name);if(count>0)return alert(`${a.name} tiene ${count} inmueble(s). Primero desactívalo para reasignarlos.`);if(!confirm(`¿Eliminar definitivamente a ${a.name}?`))return;const {error}=await sb.from("advisors").delete().eq("id",id);if(error)return alert(error.message);await refreshAll()}
 
 function renderLeads(){
   const q=(leadSearch?.value||"").toLowerCase(), st=leadStatusFilter?.value||"";
@@ -470,7 +521,7 @@ function renderAppointments(){
 }
 async function updateAppointmentStatus(id,status){const {error}=await sb.from("appointments").update({status,updated_at:new Date().toISOString()}).eq("id",id);if(error)return alert(error.message);await refreshAll()}
 
-document.addEventListener("keydown",e=>{if(e.key==="Escape")closeEdit()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeEdit();closeAdvisorModal()}});
 openApp();
 </script>
 </body>
