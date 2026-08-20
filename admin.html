@@ -333,18 +333,43 @@ button{cursor:pointer}
       <div class="reassign-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
       <div><h3>Reasignar inmuebles y desactivar asesor</h3><p>Este asesor tiene inmuebles asignados. Para desactivarlo, primero debes transferirlos a otro asesor activo.</p></div>
     </div>
+
     <div class="reassign-summary">
-      <div class="reassign-summary-card"><div class="reassign-person">
-        <img id="reassignAdvisorPhoto" src="Logo.png" alt="">
-        <div><strong id="reassignAdvisorName">Asesor</strong><div class="meta" id="reassignAdvisorPosition">Asesor Inmobiliario</div><div class="badges"><span class="badge green">Activo</span><span class="badge" id="reassignCountBadge">0 inmuebles</span></div></div>
-      </div></div>
-      <div class="reassign-summary-card"><div style="display:flex;gap:10px;align-items:flex-start"><i class="fa-solid fa-triangle-exclamation" style="color:#b54708;margin-top:3px"></i><div><strong style="color:#b54708">Importante</strong><div class="meta" style="margin-top:4px">Al confirmar, el asesor actual será desactivado y ya no aparecerá para nuevas asignaciones.</div></div></div></div>
+      <div class="reassign-summary-card">
+        <div class="reassign-person">
+          <img id="reassignAdvisorPhoto" src="Logo.png" alt="">
+          <div>
+            <strong id="reassignAdvisorName">Asesor</strong>
+            <div class="meta" id="reassignAdvisorPosition">Asesor Inmobiliario</div>
+            <div class="badges"><span class="badge green">Activo</span><span class="badge" id="reassignCountBadge">0 inmuebles</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="reassign-summary-card">
+        <div style="display:flex;gap:10px;align-items:flex-start">
+          <i class="fa-solid fa-triangle-exclamation" style="color:#b54708;margin-top:3px"></i>
+          <div><strong style="color:#b54708">Importante</strong><div class="meta" style="margin-top:4px">Al confirmar, el asesor actual será desactivado y ya no aparecerá para nuevas asignaciones.</div></div>
+        </div>
+      </div>
     </div>
+
     <div class="reassign-grid">
-      <div class="reassign-panel"><h4><span class="badge">1</span> Selecciona el nuevo asesor</h4><div class="muted">Solo se muestran asesores activos.</div><select id="reassignTarget" class="reassign-select"></select><div class="reassign-info"><i class="fa-solid fa-circle-info"></i> Los inmuebles conservarán toda su información. Solo cambiarán el asesor y el WhatsApp de contacto.</div></div>
-      <div class="reassign-panel"><h4><span class="badge">2</span> Inmuebles que serán reasignados</h4><div class="muted" id="reassignPropertyCountText"></div><div id="reassignPropertyList" class="reassign-property-list"></div></div>
+      <div class="reassign-panel">
+        <h4><span class="badge">1</span> Selecciona el nuevo asesor</h4>
+        <div class="muted">Solo se muestran asesores activos.</div>
+        <select id="reassignTarget" class="reassign-select"></select>
+        <div class="reassign-info"><i class="fa-solid fa-circle-info"></i> Los inmuebles conservarán toda su información. Solo cambiarán el asesor y el WhatsApp de contacto.</div>
+      </div>
+
+      <div class="reassign-panel">
+        <h4><span class="badge">2</span> Inmuebles que serán reasignados</h4>
+        <div class="muted" id="reassignPropertyCountText"></div>
+        <div id="reassignPropertyList" class="reassign-property-list"></div>
+      </div>
     </div>
+
     <div class="reassign-warning"><strong><i class="fa-solid fa-triangle-exclamation"></i> Antes de continuar:</strong> revisa que el nuevo asesor sea correcto.</div>
+
     <div class="reassign-footer">
       <button class="btn btn-soft" onclick="closeReassignModal()"><i class="fa-solid fa-xmark"></i> Cancelar</button>
       <button class="btn btn-primary" id="confirmReassignBtn" onclick="confirmReassignment()"><i class="fa-solid fa-rotate"></i> Reasignar inmuebles y desactivar asesor</button>
@@ -532,17 +557,146 @@ function closeAdvisorModal(){advisorModal.classList.remove("open")}
 function editAdvisor(id){const a=advisors.find(x=>x.id===id);if(!a)return;aId.value=a.id;aName.value=a.name||"";aPhone.value=a.phone||"";aEmail.value=a.email||"";aPosition.value=a.position||"Asesor Inmobiliario";aPhoto.value=a.photo_url||"";aDescription.value=a.description||"";aActive.value=String(!!a.active);advisorStatus.textContent="";advisorModal.classList.add("open")}
 advisorForm.addEventListener("submit",async e=>{e.preventDefault();advisorStatus.textContent="Guardando...";const record={name:aName.value.trim(),phone:aPhone.value.trim(),email:aEmail.value.trim()||null,position:aPosition.value.trim()||"Asesor Inmobiliario",photo_url:aPhoto.value.trim()||null,description:aDescription.value.trim()||null,active:aActive.value==="true",updated_at:new Date().toISOString()};const r=aId.value?await sb.from("advisors").update(record).eq("id",aId.value):await sb.from("advisors").insert(record);if(r.error){advisorStatus.textContent="❌ "+r.error.message;return}advisorStatus.textContent="✅ Asesor guardado.";await refreshAll();setTimeout(closeAdvisorModal,450)});
 async function toggleAdvisorActive(id,value){
-  const a=advisors.find(x=>x.id===id); if(!a)return;
+  const a=advisors.find(x=>x.id===id);
+  if(!a)return;
+
   if(value){
-    const {error}=await sb.from("advisors").update({active:true,updated_at:new Date().toISOString()}).eq("id",id);
-    if(error)return alert(error.message); await refreshAll(); return;
+    const {error}=await sb.from("advisors")
+      .update({active:true,updated_at:new Date().toISOString()})
+      .eq("id",id);
+    if(error)return alert(error.message);
+    await refreshAll();
+    return;
   }
+
   const assigned=properties.filter(p=>p.advisor_name===a.name);
+
   if(!assigned.length){
-    const {error}=await sb.from("advisors").update({active:false,advisor_of_month:false,updated_at:new Date().toISOString()}).eq("id",id);
-    if(error)return alert(error.message); await refreshAll(); return;
+    const {error}=await sb.from("advisors")
+      .update({active:false,advisor_of_month:false,updated_at:new Date().toISOString()})
+      .eq("id",id);
+    if(error)return alert(error.message);
+    await refreshAll();
+    return;
   }
+
   openReassignModal(id);
+}
+
+function openReassignModal(id){
+  const a=advisors.find(x=>x.id===id);
+  if(!a)return;
+
+  const assigned=properties.filter(p=>p.advisor_name===a.name);
+  const targets=advisors.filter(x=>x.active&&x.id!==id);
+
+  if(!targets.length){
+    alert("No hay otro asesor activo disponible para reasignar los inmuebles.");
+    return;
+  }
+
+  reassignAdvisorId=id;
+
+  document.getElementById("reassignAdvisorName").textContent=a.name;
+  document.getElementById("reassignAdvisorPosition").textContent=a.position||"Asesor Inmobiliario";
+
+  const advisorPhoto=document.getElementById("reassignAdvisorPhoto");
+  advisorPhoto.src=a.photo_url||"Logo.png";
+  advisorPhoto.onerror=()=>{advisorPhoto.src="Logo.png"};
+
+  document.getElementById("reassignCountBadge").textContent=`${assigned.length} inmueble${assigned.length===1?"":"s"}`;
+  document.getElementById("reassignPropertyCountText").textContent=`Total: ${assigned.length}`;
+
+  document.getElementById("reassignTarget").innerHTML=targets.map(x=>
+    `<option value="${x.id}">${esc(x.name)} · ${esc(x.position||"Asesor Inmobiliario")}</option>`
+  ).join("");
+
+  document.getElementById("reassignPropertyList").innerHTML=assigned.map(p=>{
+    const img=Array.isArray(p.image_urls)&&p.image_urls.length?p.image_urls[0]:"Logo.png";
+    return `<div class="reassign-property">
+      <img src="${esc(img)}" onerror="this.src='Logo.png'">
+      <div>
+        <strong>${esc(p.title)}</strong>
+        <div class="meta">${esc(p.location||"")}</div>
+        <div class="meta" style="color:var(--secondary);font-weight:600">${mxn(p.price)}${p.operation==="renta"?" / mes":""}</div>
+      </div>
+      <span class="badge">${p.operation==="venta"?"Venta":"Renta"}</span>
+    </div>`;
+  }).join("");
+
+  document.getElementById("reassignModal").classList.add("open");
+}
+
+function closeReassignModal(){
+  document.getElementById("reassignModal").classList.remove("open");
+  reassignAdvisorId=null;
+}
+
+async function confirmReassignment(){
+  if(!reassignAdvisorId)return;
+
+  const oldAdvisor=advisors.find(x=>x.id===reassignAdvisorId);
+  const targetId=document.getElementById("reassignTarget").value;
+  const newAdvisor=advisors.find(x=>x.id===targetId);
+
+  if(!oldAdvisor||!newAdvisor)return;
+
+  const btn=document.getElementById("confirmReassignBtn");
+  const original=btn.innerHTML;
+  btn.disabled=true;
+  btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Reasignando...';
+
+  try{
+    let result=await sb.from("properties")
+      .update({
+        advisor_name:newAdvisor.name,
+        advisor_phone:newAdvisor.phone,
+        updated_at:new Date().toISOString()
+      })
+      .eq("advisor_name",oldAdvisor.name);
+
+    if(result.error)throw result.error;
+
+    result=await sb.from("advisors")
+      .update({
+        active:false,
+        advisor_of_month:false,
+        updated_at:new Date().toISOString()
+      })
+      .eq("id",oldAdvisor.id);
+
+    if(result.error)throw result.error;
+
+    closeReassignModal();
+    await refreshAll();
+
+    alert(`✅ Los inmuebles fueron reasignados a ${newAdvisor.name} y ${oldAdvisor.name} fue desactivado.`);
+  }catch(err){
+    alert("No se pudo completar la reasignación: "+err.message);
+  }finally{
+    btn.disabled=false;
+    btn.innerHTML=original;
+  }
+}
+
+async function setAdvisorOfMonth(id){const a=advisors.find(x=>x.id===id);if(!a||!a.active)return;if(!confirm(`¿Marcar a ${a.name} como Asesor del Mes?`))return;let r=await sb.from("advisors").update({advisor_of_month:false,updated_at:new Date().toISOString()}).neq("id",id);if(r.error)return alert(r.error.message);r=await sb.from("advisors").update({advisor_of_month:true,updated_at:new Date().toISOString()}).eq("id",id);if(r.error)return alert(r.error.message);await refreshAll()}
+async function deleteAdvisor(id){const a=advisors.find(x=>x.id===id);if(!a)return;const count=advisorPropertyCount(a.name);if(count>0)return alert(`${a.name} tiene ${count} inmueble(s). Primero desactívalo para reasignarlos.`);if(!confirm(`¿Eliminar definitivamente a ${a.name}?`))return;const {error}=await sb.from("advisors").delete().eq("id",id);if(error)return alert(error.message);await refreshAll()}
+
+function renderLeads(){
+  const q=(leadSearch?.value||"").toLowerCase(), st=leadStatusFilter?.value||"";
+  const data=leads.filter(l=>(!q||`${l.name} ${l.phone} ${l.email||""} ${l.location||""}`.toLowerCase().includes(q))&&(!st||l.status===st));
+  leadList.innerHTML=data.length?data.map(l=>`
+    <div class="row-card">
+      <div class="row-head"><div>
+        <div class="row-title">${esc(l.name)} · ${esc(l.phone)}</div>
+        <div class="meta">${esc(l.intent)}${l.property_type?" · "+esc(l.property_type):""}${l.location?" · "+esc(l.location):""}</div>
+        ${l.message?`<div class="meta" style="margin-top:7px">${esc(l.message)}</div>`:""}
+      </div><span class="badge">${esc(l.status)}</span></div>
+      <div class="row-actions">
+        <a class="btn btn-success" target="_blank" href="https://wa.me/${String(l.phone).replace(/\D/g,"")}"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+        ${["nuevo","contactado","cita","seguimiento","cerrado"].map(s=>`<button class="btn btn-soft" onclick="updateLeadStatus('${l.id}','${s}')">${s}</button>`).join("")}
+      </div>
+    </div>`).join(""):`<div class="table-empty">No hay prospectos.</div>`;
 }
 async function updateLeadStatus(id,status){const {error}=await sb.from("leads").update({status,updated_at:new Date().toISOString()}).eq("id",id);if(error)return alert(error.message);await refreshAll()}
 
