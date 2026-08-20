@@ -1781,6 +1781,137 @@ nav ul li a{
 @media(max-width:800px){.owner-lead-wrap{grid-template-columns:1fr}.property-search-panel{grid-template-columns:1fr 1fr}}
 @media(max-width:560px){.featured-grid,.property-search-panel,.owner-form-grid{grid-template-columns:1fr}.owner-full{grid-column:auto}}
 
+
+/* ===== PASO 6: ASESOR DEL MES + EQUIPO DINÁMICO ===== */
+.advisor-month-section{
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 15% 20%,rgba(61,140,255,.20),transparent 34%),
+    linear-gradient(145deg,#eef5ff,#ffffff);
+}
+.advisor-month-wrap{
+  max-width:1050px;
+  margin:auto;
+}
+.advisor-month-card{
+  display:grid;
+  grid-template-columns:360px 1fr;
+  gap:0;
+  overflow:hidden;
+  background:white;
+  border:1px solid rgba(11,78,162,.10);
+  border-radius:30px;
+  box-shadow:0 24px 70px rgba(2,27,58,.14);
+}
+.advisor-month-photo{
+  position:relative;
+  min-height:430px;
+  background:#eaf1f9;
+}
+.advisor-month-photo img{
+  width:100%;
+  height:100%;
+  position:absolute;
+  inset:0;
+  object-fit:cover;
+}
+.advisor-month-badge{
+  position:absolute;
+  top:22px;
+  left:22px;
+  z-index:2;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:10px 15px;
+  border-radius:999px;
+  color:#fff;
+  background:linear-gradient(135deg,#0b4ea2,#3d8cff);
+  box-shadow:0 12px 28px rgba(11,78,162,.30);
+  font-size:.86rem;
+  font-weight:700;
+}
+.advisor-month-content{
+  padding:48px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+.advisor-month-content .eyebrow{margin-bottom:10px}
+.advisor-month-content h3{
+  color:#021b3a;
+  font-size:clamp(2rem,4vw,3rem);
+  line-height:1.1;
+  margin-bottom:8px;
+}
+.advisor-month-position{
+  color:#0b4ea2;
+  font-weight:600;
+  margin-bottom:20px;
+}
+.advisor-month-description{
+  color:#64748b;
+  line-height:1.85;
+  margin-bottom:26px;
+}
+.advisor-month-actions{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.advisor-month-whatsapp,
+.advisor-month-properties{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  padding:13px 20px;
+  border-radius:13px;
+  text-decoration:none;
+  font-weight:600;
+}
+.advisor-month-whatsapp{
+  color:white;
+  background:#25d366;
+}
+.advisor-month-properties{
+  color:#0b4ea2;
+  background:#eef4ff;
+}
+.advisor-month-loading,
+.advisors-loading,
+.advisors-empty{
+  grid-column:1/-1;
+  text-align:center;
+  padding:35px;
+  border-radius:20px;
+  color:#c9d8e9;
+  border:1px solid rgba(255,255,255,.08);
+  background:rgba(255,255,255,.05);
+}
+.advisor-month-loading{
+  color:#64748b;
+  background:white;
+  box-shadow:var(--shadow-soft);
+}
+.advisor-card .advisor-position{
+  color:#78adff;
+  font-weight:600;
+  margin-bottom:10px;
+}
+@media(max-width:800px){
+  .advisor-month-card{grid-template-columns:1fr}
+  .advisor-month-photo{min-height:390px}
+  .advisor-month-content{padding:30px}
+}
+@media(max-width:480px){
+  .advisor-month-photo{min-height:330px}
+  .advisor-month-content{padding:24px}
+  .advisor-month-actions{flex-direction:column}
+  .advisor-month-whatsapp,.advisor-month-properties{width:100%}
+}
+
 </style>
 </head>
 
@@ -2139,157 +2270,37 @@ Avalúo o análisis comercial
 </section>
   
   <!-- ================================================= -->
+<!-- ASESOR DEL MES -->
+<!-- ================================================= -->
+<section class="section advisor-month-section" id="asesor-del-mes">
+  <div class="section-title">
+    <h2>Asesor del Mes</h2>
+    <p>Reconocemos el compromiso, seguimiento y atención de nuestro equipo.</p>
+  </div>
+
+  <div class="advisor-month-wrap" id="advisorMonthContainer">
+    <div class="advisor-month-loading">
+      <i class="fa-solid fa-spinner fa-spin"></i>
+      <span>Cargando asesor del mes...</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================= -->
 <!-- ASESORES -->
 <!-- ================================================= -->
-
 <section class="section advisors" id="asesores">
-
   <div class="section-title">
-
     <h2 style="color:white;">Nuestros Asesores</h2>
-
-    <p style="color:#c9d8e9;">
-      Expertos listos para ayudarte a tomar la mejor decisión.
-    </p>
-
+    <p style="color:#c9d8e9;">Expertos listos para ayudarte a tomar la mejor decisión.</p>
   </div>
 
-  <div class="advisors-grid">
-
-    <!-- 6 ASESORES -->
-
-    <div class="advisor-card"
-onclick="openAdvisorModal(
-'Cristian Montaño',
-'Asesor inmobiliario especializado en el mercado de la Ciudad de México, con más de 8 años de experiencia brindando soluciones integrales para la compra, venta y renta de propiedades.'
-)">
-
-  <img src="Cristian.jpeg">
-
-  <h3>Cristian Montaño</h3>
-
-  <p>Asesor inmobiliario especializado en el mercado de la Ciudad de México, con más de 8 años de experiencia brindando soluciones integrales para la compra, venta y renta de propiedades.</p>
-
-  <div class="socials" onclick="event.stopPropagation()">
-
-    <a href="https://wa.me/525561793961" target="_blank">
-      <i class="fab fa-whatsapp"></i>
-    </a>
-
-  </div>
-
-</div>
-
-    <div class="advisor-card"
-onclick="openAdvisorModal(
-'Raquel Ortega',
-'Tu patrimonio merece la mejor asesoría. Con mas de 15 años de experiencia en bienes raíces, te acompaño con profesionalismo, transparencia y dedicación en cada operación.'
-)">
-
-  <img src="Raquel.jpeg" alt="Imagen de la propiedad o asesor" loading="lazy">
-
-  <h3>Raquel Ortega</h3>
-
-  <p>Tu patrimonio merece la mejor asesoría. Con mas de 15 años de experiencia en bienes raíces, te acompaño con profesionalismo, transparencia y dedicación en cada operación.</p>
-
-  <div class="socials" onclick="event.stopPropagation()">
-
-    <a href="https://wa.me/525523321483" target="_blank">
-      <i class="fab fa-whatsapp"></i>
-    </a>
-
-  </div>
-
-</div>
-
-    <div class="advisor-card"
-onclick="openAdvisorModal(
-'Samuel Palafox',
-'Especialista en compra y venta residencial con más de 10 años de experiencia ayudando a familias a encontrar su hogar ideal.'
-)">
-
-  <img src="Samuel.jpeg">
-
-  <h3>Samuel Palafox</h3>
-
-  <p>Especialista en compra y venta residencial.</p>
-
-  <div class="socials" onclick="event.stopPropagation()">
-
-    <a href="https://wa.me/525564759277" target="_blank">
-      <i class="fab fa-whatsapp"></i>
-    </a>
-
-  </div>
-
+  <div class="advisors-grid" id="advisorsGrid">
+    <div class="advisors-loading">
+      <i class="fa-solid fa-spinner fa-spin"></i>
+      <span>Cargando asesores...</span>
     </div>
-
-    <div class="advisor-card"
-onclick="openAdvisorModal(
-'Yadira Sanchez',
-'Con más de 10 años de experiencia en el sector inmobiliario, mi compromiso es brindar un servicio personalizado, transparente y orientado a encontrar la mejor solución para cada cliente.'
-)">
-
-  <img src="Yadira.jpeg" alt="Imagen de la propiedad o asesor" loading="lazy">
-
-  <h3>Yadira Sanchez</h3>
-
-  <p>Con más de 10 años de experiencia en el sector inmobiliario, mi compromiso es brindar un servicio personalizado, transparente y orientado a encontrar la mejor solución para cada cliente.</p>
-
-  <div class="socials" onclick="event.stopPropagation()">
-
-    <a href="https://wa.me/525564759277" target="_blank">
-      <i class="fab fa-whatsapp"></i>
-    </a>
-
   </div>
-
-    </div>
-
-   <div class="advisor-card"
-onclick="openAdvisorModal(
-'Angel Nuñez',
-'Acompaño a mis clientes en la compra, venta y renta de propiedades, ofreciendo asesoría especializada, negociación estratégica y un servicio basado en confianza, profesionalismo y excelencia.'
-)">
-
-  <img src="Angel.jpeg" alt="Imagen de la propiedad o asesor" loading="lazy">
-
-  <h3>Angel Nuñez</h3>
-
-  <p>Acompaño a mis clientes en la compra, venta y renta de propiedades, ofreciendo asesoría especializada, negociación estratégica y un servicio basado en confianza, profesionalismo y excelencia..</p>
-
-  <div class="socials" onclick="event.stopPropagation()">
-
-    <a href="https://wa.me/525512996301" target="_blank">
-      <i class="fab fa-whatsapp"></i>
-    </a>
-
-  </div>
-
-    </div>
-
-    <div class="advisor-card"
-onclick="openAdvisorModal(
-'Elvira Ortega',
-'Mi prioridad es hacer que cada operación inmobiliaria sea una experiencia segura, clara y exitosa, siempre con un trato cercano y profesional.'
-)">
-
-  <img src="Elvira.jpeg" alt="Imagen de la propiedad o asesor" loading="lazy">
-
-  <h3>Elvira Ortega</h3>
-
-  <p>Mi prioridad es hacer que cada operación inmobiliaria sea una experiencia segura, clara y exitosa, siempre con un trato cercano y profesional.</p>
-
-  <div class="socials" onclick="event.stopPropagation()">
-
-    <a href="https://wa.me/525512996301" target="_blank">
-      <i class="fab fa-whatsapp"></i>
-    </a>
-
-  </div>
-
-    </div>
-
 </section>
 
 <!-- ================================================= -->
@@ -2643,6 +2654,156 @@ onclick="openAdvisorModal(
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
+
+<script>
+/* ===== PASO 6: ASESOR DEL MES Y ASESORES DESDE SUPABASE ===== */
+function advisorEscape(value){
+  return String(value ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+function advisorPhone(value){
+  return String(value ?? "").replace(/\D/g,"");
+}
+
+function advisorFallbackDescription(advisor){
+  return advisor.description ||
+    "Te acompaño durante tu proceso inmobiliario con atención personalizada, seguimiento y asesoría profesional.";
+}
+
+function buildPublicAdvisorCard(advisor){
+  const photo = advisor.photo_url || "Logo.png";
+  const description = advisorFallbackDescription(advisor);
+  const phone = advisorPhone(advisor.phone);
+  const whatsapp = phone
+    ? `https://wa.me/${phone}?text=${encodeURIComponent("Hola, me gustaría recibir información sobre sus servicios inmobiliarios.")}`
+    : "#";
+
+  return `
+    <article class="advisor-card"
+      onclick='openAdvisorModal(${JSON.stringify(String(advisor.name || ""))},${JSON.stringify(String(description))})'>
+      <img src="${advisorEscape(photo)}"
+           alt="${advisorEscape(advisor.name)}"
+           loading="lazy"
+           onerror="this.src='Logo.png'">
+
+      <h3>${advisorEscape(advisor.name)}</h3>
+      <p class="advisor-position">${advisorEscape(advisor.position || "Asesor Inmobiliario")}</p>
+      <p>${advisorEscape(description)}</p>
+
+      <div class="socials" onclick="event.stopPropagation()">
+        ${phone ? `
+          <a href="${advisorEscape(whatsapp)}"
+             target="_blank"
+             rel="noopener"
+             aria-label="Contactar a ${advisorEscape(advisor.name)} por WhatsApp">
+            <i class="fab fa-whatsapp"></i>
+          </a>` : ""}
+      </div>
+    </article>`;
+}
+
+function renderAdvisorOfMonth(advisor){
+  const container = document.getElementById("advisorMonthContainer");
+  if(!container) return;
+
+  if(!advisor){
+    container.innerHTML = `
+      <div class="advisor-month-loading">
+        <i class="fa-solid fa-award"></i>
+        <span>Aún no se ha seleccionado un Asesor del Mes.</span>
+      </div>`;
+    return;
+  }
+
+  const photo = advisor.photo_url || "Logo.png";
+  const description = advisorFallbackDescription(advisor);
+  const phone = advisorPhone(advisor.phone);
+  const whatsapp = phone
+    ? `https://wa.me/${phone}?text=${encodeURIComponent("Hola "+advisor.name+", vi que eres el Asesor del Mes de Bienestar Soluciones Inmobiliarias y me gustaría recibir información.")}`
+    : "#";
+
+  container.innerHTML = `
+    <article class="advisor-month-card">
+      <div class="advisor-month-photo">
+        <span class="advisor-month-badge">
+          <i class="fa-solid fa-star"></i> Asesor del Mes
+        </span>
+        <img src="${advisorEscape(photo)}"
+             alt="${advisorEscape(advisor.name)}"
+             onerror="this.src='Logo.png'">
+      </div>
+
+      <div class="advisor-month-content">
+        <span class="eyebrow">Bienestar reconoce</span>
+        <h3>${advisorEscape(advisor.name)}</h3>
+        <div class="advisor-month-position">
+          ${advisorEscape(advisor.position || "Asesor Inmobiliario")}
+        </div>
+        <p class="advisor-month-description">${advisorEscape(description)}</p>
+
+        <div class="advisor-month-actions">
+          ${phone ? `
+            <a class="advisor-month-whatsapp"
+               href="${advisorEscape(whatsapp)}"
+               target="_blank"
+               rel="noopener">
+              <i class="fa-brands fa-whatsapp"></i>
+              Contactar por WhatsApp
+            </a>` : ""}
+          <a class="advisor-month-properties" href="#compras">
+            <i class="fa-solid fa-house"></i>
+            Ver propiedades
+          </a>
+        </div>
+      </div>
+    </article>`;
+}
+
+async function loadPublicAdvisors(){
+  const grid = document.getElementById("advisorsGrid");
+  const monthContainer = document.getElementById("advisorMonthContainer");
+
+  if(typeof sb === "undefined"){
+    if(grid) grid.innerHTML = `<div class="advisors-empty">No fue posible conectar con los asesores.</div>`;
+    if(monthContainer) monthContainer.innerHTML = `<div class="advisor-month-loading">No fue posible cargar el Asesor del Mes.</div>`;
+    return;
+  }
+
+  try{
+    const {data,error} = await sb
+      .from("advisors")
+      .select("*")
+      .eq("active",true)
+      .order("name",{ascending:true});
+
+    if(error) throw error;
+
+    const advisors = Array.isArray(data) ? data : [];
+    const monthAdvisor = advisors.find(a => a.advisor_of_month === true) || null;
+
+    renderAdvisorOfMonth(monthAdvisor);
+
+    if(grid){
+      grid.innerHTML = advisors.length
+        ? advisors.map(buildPublicAdvisorCard).join("")
+        : `<div class="advisors-empty"><i class="fa-solid fa-user-group"></i><br>No hay asesores activos para mostrar.</div>`;
+    }
+
+  }catch(error){
+    console.error("Error cargando asesores:",error);
+    if(grid) grid.innerHTML = `<div class="advisors-empty">No fue posible cargar el equipo de asesores.</div>`;
+    if(monthContainer) monthContainer.innerHTML = `<div class="advisor-month-loading">No fue posible cargar el Asesor del Mes.</div>`;
+  }
+}
+
+document.addEventListener("DOMContentLoaded",loadPublicAdvisors);
+</script>
+
 
 <script>
 function formatMoneyMXN(value){
