@@ -128,6 +128,27 @@ button{cursor:pointer}
 .reassign-footer{display:flex;justify-content:flex-end;gap:10px;margin-top:20px;padding-top:18px;border-top:1px solid #e6ebf1}
 @media(max-width:850px){.reassign-summary,.reassign-grid{grid-template-columns:1fr}.reassign-property{grid-template-columns:64px 1fr}.reassign-property .badge{grid-column:2}}
 
+
+/* ===== PASO 7: RENDIMIENTO POR ASESOR ===== */
+.performance-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+.performance-kpi{border:1px solid #e5ebf2;border-radius:17px;padding:17px;background:linear-gradient(145deg,#fff,#f8fbff)}
+.performance-kpi i{color:var(--secondary);font-size:1.15rem}
+.performance-kpi .value{font-size:1.65rem;font-weight:700;color:var(--primary);margin-top:6px}
+.performance-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.performance-card{border:1px solid #e5ebf2;border-radius:20px;padding:18px;background:#fff}
+.performance-card-top{display:flex;gap:13px;align-items:center}
+.performance-card img{width:64px;height:64px;border-radius:16px;object-fit:cover;background:#eef4ff;border:1px solid var(--border)}
+.performance-card h4{margin:0;color:var(--primary)}
+.performance-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:15px}
+.performance-metric{padding:11px;border-radius:13px;background:#f6f9fd;text-align:center}
+.performance-metric strong{display:block;color:var(--primary);font-size:1.15rem}
+.performance-metric span{font-size:.72rem;color:var(--muted)}
+.performance-rank{margin-left:auto;min-width:42px;height:42px;border-radius:13px;background:#eef4ff;color:var(--secondary);display:grid;place-items:center;font-weight:700}
+.performance-rank.first{background:#fff6df;color:#946200}
+.performance-note{margin-top:15px;padding:12px 14px;border-radius:13px;background:#f8fafc;color:var(--muted);font-size:.82rem;line-height:1.55}
+@media(max-width:1050px){.performance-summary{grid-template-columns:repeat(2,1fr)}.performance-grid{grid-template-columns:1fr}}
+@media(max-width:520px){.performance-summary{grid-template-columns:1fr}.performance-metrics{grid-template-columns:1fr 1fr}}
+
 </style>
 </head>
 <body>
@@ -161,6 +182,7 @@ button{cursor:pointer}
       <button data-section="properties"><i class="fa-solid fa-building"></i> Inmuebles</button>
       <button data-section="publish"><i class="fa-solid fa-plus"></i> Publicar</button>
       <button data-section="advisors"><i class="fa-solid fa-user-tie"></i> Asesores</button>
+      <button data-section="performance"><i class="fa-solid fa-chart-column"></i> Rendimiento</button>
       <button data-section="leads"><i class="fa-solid fa-user-group"></i> Prospectos</button>
       <button data-section="appointments"><i class="fa-solid fa-calendar-check"></i> Citas</button>
       <a href="./"><i class="fa-solid fa-arrow-up-right-from-square"></i> Ver página</a>
@@ -242,6 +264,32 @@ button{cursor:pointer}
         <div class="row-head"><div><h3 style="margin-bottom:4px">Administrar asesores</h3><div class="muted">Altas, edición, activación, bajas y Asesor del Mes.</div></div>
         <button class="btn btn-primary" onclick="openAdvisorModal()"><i class="fa-solid fa-user-plus"></i> Agregar asesor</button></div>
         <div id="advisorList" class="advisor-grid" style="margin-top:20px"></div>
+      </div>
+    </section>
+
+    <section id="performance" class="section">
+      <div class="panel">
+        <div class="row-head">
+          <div>
+            <h3 style="margin-bottom:4px">Rendimiento por asesor</h3>
+            <div class="muted">Resumen automático con la información disponible en inmuebles, prospectos y citas.</div>
+          </div>
+          <button class="btn btn-soft" onclick="refreshAll()"><i class="fa-solid fa-rotate"></i> Actualizar</button>
+        </div>
+
+        <div class="performance-summary" style="margin-top:20px">
+          <div class="performance-kpi"><i class="fa-solid fa-user-tie"></i><div class="value" id="perfActiveAdvisors">0</div><div class="muted">Asesores activos</div></div>
+          <div class="performance-kpi"><i class="fa-solid fa-house"></i><div class="value" id="perfAssignedProperties">0</div><div class="muted">Inmuebles asignados</div></div>
+          <div class="performance-kpi"><i class="fa-solid fa-user-plus"></i><div class="value" id="perfAssignedLeads">0</div><div class="muted">Prospectos identificados por asesor</div></div>
+          <div class="performance-kpi"><i class="fa-solid fa-calendar-check"></i><div class="value" id="perfAppointments">0</div><div class="muted">Citas asignadas</div></div>
+        </div>
+
+        <div id="performanceGrid" class="performance-grid"></div>
+
+        <div class="performance-note">
+          <i class="fa-solid fa-circle-info"></i>
+          El ranking usa los datos que actualmente existen en Supabase. Las citas sí incluyen asesor; los prospectos solo se atribuyen cuando su registro contiene un campo de asesor reconocible. No se inventan asignaciones.
+        </div>
       </div>
     </section>
 
@@ -420,12 +468,12 @@ async function refreshAll(){
   if(a.error)console.error(a.error); else appointments=a.data||[];
   if(adv.error)console.error(adv.error); else advisors=adv.data||[];
   pAdvisor.innerHTML=advisorOptions();eAdvisor.innerHTML=advisorOptions("",true);
-  renderDashboard();renderProperties();renderAdvisors();renderLeads();renderAppointments();
+  renderDashboard();renderProperties();renderAdvisors();renderPerformance();renderLeads();renderAppointments();
 }
 function showSection(id){
   document.querySelectorAll(".section").forEach(s=>s.classList.toggle("active",s.id===id));
   document.querySelectorAll(".side-nav button[data-section]").forEach(b=>b.classList.toggle("active",b.dataset.section===id));
-  const labels={dashboard:"Dashboard",properties:"Inmuebles",publish:"Publicar inmueble",advisors:"Asesores",leads:"Prospectos",appointments:"Agenda de visitas"};
+  const labels={dashboard:"Dashboard",properties:"Inmuebles",publish:"Publicar inmueble",advisors:"Asesores",performance:"Rendimiento por asesor",leads:"Prospectos",appointments:"Agenda de visitas"};
   sectionTitle.textContent=labels[id]||"Administración";
 }
 document.querySelectorAll(".side-nav button[data-section]").forEach(b=>b.addEventListener("click",()=>showSection(b.dataset.section)));
@@ -681,6 +729,75 @@ async function confirmReassignment(){
 
 async function setAdvisorOfMonth(id){const a=advisors.find(x=>x.id===id);if(!a||!a.active)return;if(!confirm(`¿Marcar a ${a.name} como Asesor del Mes?`))return;let r=await sb.from("advisors").update({advisor_of_month:false,updated_at:new Date().toISOString()}).neq("id",id);if(r.error)return alert(r.error.message);r=await sb.from("advisors").update({advisor_of_month:true,updated_at:new Date().toISOString()}).eq("id",id);if(r.error)return alert(r.error.message);await refreshAll()}
 async function deleteAdvisor(id){const a=advisors.find(x=>x.id===id);if(!a)return;const count=advisorPropertyCount(a.name);if(count>0)return alert(`${a.name} tiene ${count} inmueble(s). Primero desactívalo para reasignarlos.`);if(!confirm(`¿Eliminar definitivamente a ${a.name}?`))return;const {error}=await sb.from("advisors").delete().eq("id",id);if(error)return alert(error.message);await refreshAll()}
+
+
+function normalizedName(v){
+  return String(v||"").trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+}
+function leadAdvisorName(l){
+  return l.advisor_name || l.assigned_advisor || l.advisor || l.asesor || null;
+}
+function advisorStats(a){
+  const key=normalizedName(a.name);
+  const advisorProperties=properties.filter(p=>normalizedName(p.advisor_name)===key);
+  const advisorAppointments=appointments.filter(x=>normalizedName(x.advisor_name)===key);
+  const advisorLeads=leads.filter(l=>normalizedName(leadAdvisorName(l))===key);
+
+  return {
+    properties:advisorProperties.length,
+    available:advisorProperties.filter(p=>["disponible","apartada"].includes(p.status)).length,
+    closedProperties:advisorProperties.filter(p=>["vendida","rentada"].includes(p.status)).length,
+    leads:advisorLeads.length,
+    appointments:advisorAppointments.length,
+    completedAppointments:advisorAppointments.filter(x=>x.status==="realizada").length
+  };
+}
+function renderPerformance(){
+  const grid=document.getElementById("performanceGrid");
+  if(!grid)return;
+
+  const active=advisors.filter(a=>a.active);
+  const rows=active.map(a=>({advisor:a,stats:advisorStats(a)}));
+
+  rows.sort((x,y)=>{
+    const sx=x.stats.closedProperties*5+x.stats.completedAppointments*3+x.stats.appointments*2+x.stats.leads+x.stats.properties;
+    const sy=y.stats.closedProperties*5+y.stats.completedAppointments*3+y.stats.appointments*2+y.stats.leads+y.stats.properties;
+    return sy-sx || x.advisor.name.localeCompare(y.advisor.name,"es");
+  });
+
+  const assignedLeadCount=leads.filter(l=>leadAdvisorName(l)).length;
+  document.getElementById("perfActiveAdvisors").textContent=active.length;
+  document.getElementById("perfAssignedProperties").textContent=properties.filter(p=>p.advisor_name).length;
+  document.getElementById("perfAssignedLeads").textContent=assignedLeadCount;
+  document.getElementById("perfAppointments").textContent=appointments.filter(a=>a.advisor_name).length;
+
+  grid.innerHTML=rows.length?rows.map((row,index)=>{
+    const a=row.advisor,s=row.stats;
+    return `<article class="performance-card">
+      <div class="performance-card-top">
+        <img src="${esc(a.photo_url||"Logo.png")}" onerror="this.src='Logo.png'" alt="${esc(a.name)}">
+        <div>
+          <h4>${esc(a.name)}</h4>
+          <div class="meta">${esc(a.position||"Asesor Inmobiliario")}</div>
+          <div class="badges">
+            ${a.advisor_of_month?'<span class="badge gold">⭐ Asesor del mes</span>':""}
+            <span class="badge green">Activo</span>
+          </div>
+        </div>
+        <div class="performance-rank ${index===0?"first":""}">#${index+1}</div>
+      </div>
+
+      <div class="performance-metrics">
+        <div class="performance-metric"><strong>${s.properties}</strong><span>Inmuebles</span></div>
+        <div class="performance-metric"><strong>${s.available}</strong><span>En cartera</span></div>
+        <div class="performance-metric"><strong>${s.closedProperties}</strong><span>Vendidos / rentados</span></div>
+        <div class="performance-metric"><strong>${s.leads}</strong><span>Prospectos</span></div>
+        <div class="performance-metric"><strong>${s.appointments}</strong><span>Citas</span></div>
+        <div class="performance-metric"><strong>${s.completedAppointments}</strong><span>Citas realizadas</span></div>
+      </div>
+    </article>`;
+  }).join(""):`<div class="table-empty">No hay asesores activos para mostrar.</div>`;
+}
 
 function renderLeads(){
   const q=(leadSearch?.value||"").toLowerCase(), st=leadStatusFilter?.value||"";
