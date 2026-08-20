@@ -106,6 +106,28 @@ button{cursor:pointer}
   .cards{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.full{grid-column:auto}.advisor-grid{grid-template-columns:1fr}
 }
 @media(max-width:520px){.cards{grid-template-columns:1fr}.side-nav{grid-template-columns:repeat(2,1fr)}.topbar{align-items:flex-start;flex-direction:column}}
+
+.reassign-box{width:min(1150px,96vw)}
+.reassign-head{display:flex;gap:16px;align-items:flex-start;padding-bottom:18px;border-bottom:1px solid #e6ebf1}
+.reassign-icon{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;background:#fff4e8;color:#b54708;font-size:1.35rem;flex:0 0 auto}
+.reassign-head h3{margin:0;color:var(--primary);font-size:1.35rem}
+.reassign-head p{margin:5px 0 0;color:var(--muted)}
+.reassign-summary{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}
+.reassign-summary-card{border:1px solid #e5ebf2;border-radius:16px;padding:16px;background:#fafcff}
+.reassign-person{display:flex;gap:13px;align-items:center}
+.reassign-person img{width:62px;height:62px;border-radius:16px;object-fit:cover;background:#eef4ff}
+.reassign-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:18px;margin-top:18px}
+.reassign-panel{border:1px solid #e5ebf2;border-radius:18px;padding:18px}
+.reassign-panel h4{margin:0 0 6px;color:var(--primary)}
+.reassign-select{width:100%;padding:13px 14px;border:1px solid var(--border);border-radius:12px;background:#fff;margin-top:12px}
+.reassign-property-list{display:grid;gap:10px;margin-top:12px;max-height:360px;overflow:auto}
+.reassign-property{display:grid;grid-template-columns:76px 1fr auto;gap:12px;align-items:center;border:1px solid #e5ebf2;border-radius:14px;padding:10px;background:#fff}
+.reassign-property img{width:76px;height:64px;object-fit:cover;border-radius:10px;background:#eef4ff}
+.reassign-info{margin-top:14px;padding:13px;border-radius:12px;background:#eef4ff;color:#315c91;font-size:.88rem}
+.reassign-warning{margin-top:18px;padding:14px;border-radius:14px;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412}
+.reassign-footer{display:flex;justify-content:flex-end;gap:10px;margin-top:20px;padding-top:18px;border-top:1px solid #e6ebf1}
+@media(max-width:850px){.reassign-summary,.reassign-grid{grid-template-columns:1fr}.reassign-property{grid-template-columns:64px 1fr}.reassign-property .badge{grid-column:2}}
+
 </style>
 </head>
 <body>
@@ -303,6 +325,33 @@ button{cursor:pointer}
   </div>
 </div>
 
+
+<div id="reassignModal" class="modal">
+  <div class="modal-box reassign-box">
+    <button class="modal-close" onclick="closeReassignModal()"><i class="fa-solid fa-xmark"></i></button>
+    <div class="reassign-head">
+      <div class="reassign-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+      <div><h3>Reasignar inmuebles y desactivar asesor</h3><p>Este asesor tiene inmuebles asignados. Para desactivarlo, primero debes transferirlos a otro asesor activo.</p></div>
+    </div>
+    <div class="reassign-summary">
+      <div class="reassign-summary-card"><div class="reassign-person">
+        <img id="reassignAdvisorPhoto" src="Logo.png" alt="">
+        <div><strong id="reassignAdvisorName">Asesor</strong><div class="meta" id="reassignAdvisorPosition">Asesor Inmobiliario</div><div class="badges"><span class="badge green">Activo</span><span class="badge" id="reassignCountBadge">0 inmuebles</span></div></div>
+      </div></div>
+      <div class="reassign-summary-card"><div style="display:flex;gap:10px;align-items:flex-start"><i class="fa-solid fa-triangle-exclamation" style="color:#b54708;margin-top:3px"></i><div><strong style="color:#b54708">Importante</strong><div class="meta" style="margin-top:4px">Al confirmar, el asesor actual será desactivado y ya no aparecerá para nuevas asignaciones.</div></div></div></div>
+    </div>
+    <div class="reassign-grid">
+      <div class="reassign-panel"><h4><span class="badge">1</span> Selecciona el nuevo asesor</h4><div class="muted">Solo se muestran asesores activos.</div><select id="reassignTarget" class="reassign-select"></select><div class="reassign-info"><i class="fa-solid fa-circle-info"></i> Los inmuebles conservarán toda su información. Solo cambiarán el asesor y el WhatsApp de contacto.</div></div>
+      <div class="reassign-panel"><h4><span class="badge">2</span> Inmuebles que serán reasignados</h4><div class="muted" id="reassignPropertyCountText"></div><div id="reassignPropertyList" class="reassign-property-list"></div></div>
+    </div>
+    <div class="reassign-warning"><strong><i class="fa-solid fa-triangle-exclamation"></i> Antes de continuar:</strong> revisa que el nuevo asesor sea correcto.</div>
+    <div class="reassign-footer">
+      <button class="btn btn-soft" onclick="closeReassignModal()"><i class="fa-solid fa-xmark"></i> Cancelar</button>
+      <button class="btn btn-primary" id="confirmReassignBtn" onclick="confirmReassignment()"><i class="fa-solid fa-rotate"></i> Reasignar inmuebles y desactivar asesor</button>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
 <script>
@@ -311,6 +360,7 @@ button{cursor:pointer}
 let advisors=[];
 
 let properties=[], leads=[], appointments=[];
+let reassignAdvisorId=null;
 
 function esc(v){return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
 function mxn(v){return new Intl.NumberFormat("es-MX",{style:"currency",currency:"MXN",maximumFractionDigits:0}).format(Number(v||0))}
@@ -481,25 +531,18 @@ function openAdvisorModal(){advisorForm.reset();aId.value="";aPosition.value="As
 function closeAdvisorModal(){advisorModal.classList.remove("open")}
 function editAdvisor(id){const a=advisors.find(x=>x.id===id);if(!a)return;aId.value=a.id;aName.value=a.name||"";aPhone.value=a.phone||"";aEmail.value=a.email||"";aPosition.value=a.position||"Asesor Inmobiliario";aPhoto.value=a.photo_url||"";aDescription.value=a.description||"";aActive.value=String(!!a.active);advisorStatus.textContent="";advisorModal.classList.add("open")}
 advisorForm.addEventListener("submit",async e=>{e.preventDefault();advisorStatus.textContent="Guardando...";const record={name:aName.value.trim(),phone:aPhone.value.trim(),email:aEmail.value.trim()||null,position:aPosition.value.trim()||"Asesor Inmobiliario",photo_url:aPhoto.value.trim()||null,description:aDescription.value.trim()||null,active:aActive.value==="true",updated_at:new Date().toISOString()};const r=aId.value?await sb.from("advisors").update(record).eq("id",aId.value):await sb.from("advisors").insert(record);if(r.error){advisorStatus.textContent="❌ "+r.error.message;return}advisorStatus.textContent="✅ Asesor guardado.";await refreshAll();setTimeout(closeAdvisorModal,450)});
-async function toggleAdvisorActive(id,value){const a=advisors.find(x=>x.id===id);if(!a)return;const count=advisorPropertyCount(a.name);if(!value&&count>0){const others=advisors.filter(x=>x.active&&x.id!==id);if(!others.length)return alert("No hay otro asesor activo para reasignar los inmuebles.");const choice=prompt(`${a.name} tiene ${count} inmueble(s).\n\nEscribe el número del asesor al que deseas reasignarlos:\n`+others.map((x,i)=>`${i+1}. ${x.name}`).join("\n"));if(choice===null)return;const target=others[Number(choice)-1];if(!target)return alert("Selección no válida.");const r=await sb.from("properties").update({advisor_name:target.name,advisor_phone:target.phone,updated_at:new Date().toISOString()}).eq("advisor_name",a.name);if(r.error)return alert(r.error.message)}const changes={active:value,updated_at:new Date().toISOString()};if(!value)changes.advisor_of_month=false;const {error}=await sb.from("advisors").update(changes).eq("id",id);if(error)return alert(error.message);await refreshAll()}
-async function setAdvisorOfMonth(id){const a=advisors.find(x=>x.id===id);if(!a||!a.active)return;if(!confirm(`¿Marcar a ${a.name} como Asesor del Mes?`))return;let r=await sb.from("advisors").update({advisor_of_month:false,updated_at:new Date().toISOString()}).neq("id",id);if(r.error)return alert(r.error.message);r=await sb.from("advisors").update({advisor_of_month:true,updated_at:new Date().toISOString()}).eq("id",id);if(r.error)return alert(r.error.message);await refreshAll()}
-async function deleteAdvisor(id){const a=advisors.find(x=>x.id===id);if(!a)return;const count=advisorPropertyCount(a.name);if(count>0)return alert(`${a.name} tiene ${count} inmueble(s). Primero desactívalo para reasignarlos.`);if(!confirm(`¿Eliminar definitivamente a ${a.name}?`))return;const {error}=await sb.from("advisors").delete().eq("id",id);if(error)return alert(error.message);await refreshAll()}
-
-function renderLeads(){
-  const q=(leadSearch?.value||"").toLowerCase(), st=leadStatusFilter?.value||"";
-  const data=leads.filter(l=>(!q||`${l.name} ${l.phone} ${l.email||""} ${l.location||""}`.toLowerCase().includes(q))&&(!st||l.status===st));
-  leadList.innerHTML=data.length?data.map(l=>`
-    <div class="row-card">
-      <div class="row-head"><div>
-        <div class="row-title">${esc(l.name)} · ${esc(l.phone)}</div>
-        <div class="meta">${esc(l.intent)}${l.property_type?" · "+esc(l.property_type):""}${l.location?" · "+esc(l.location):""}</div>
-        ${l.message?`<div class="meta" style="margin-top:7px">${esc(l.message)}</div>`:""}
-      </div><span class="badge">${esc(l.status)}</span></div>
-      <div class="row-actions">
-        <a class="btn btn-success" target="_blank" href="https://wa.me/${String(l.phone).replace(/\D/g,"")}"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
-        ${["nuevo","contactado","cita","seguimiento","cerrado"].map(s=>`<button class="btn btn-soft" onclick="updateLeadStatus('${l.id}','${s}')">${s}</button>`).join("")}
-      </div>
-    </div>`).join(""):`<div class="table-empty">No hay prospectos.</div>`;
+async function toggleAdvisorActive(id,value){
+  const a=advisors.find(x=>x.id===id); if(!a)return;
+  if(value){
+    const {error}=await sb.from("advisors").update({active:true,updated_at:new Date().toISOString()}).eq("id",id);
+    if(error)return alert(error.message); await refreshAll(); return;
+  }
+  const assigned=properties.filter(p=>p.advisor_name===a.name);
+  if(!assigned.length){
+    const {error}=await sb.from("advisors").update({active:false,advisor_of_month:false,updated_at:new Date().toISOString()}).eq("id",id);
+    if(error)return alert(error.message); await refreshAll(); return;
+  }
+  openReassignModal(id);
 }
 async function updateLeadStatus(id,status){const {error}=await sb.from("leads").update({status,updated_at:new Date().toISOString()}).eq("id",id);if(error)return alert(error.message);await refreshAll()}
 
@@ -521,7 +564,7 @@ function renderAppointments(){
 }
 async function updateAppointmentStatus(id,status){const {error}=await sb.from("appointments").update({status,updated_at:new Date().toISOString()}).eq("id",id);if(error)return alert(error.message);await refreshAll()}
 
-document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeEdit();closeAdvisorModal()}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeEdit();closeAdvisorModal();closeReassignModal()}});
 openApp();
 </script>
 </body>
